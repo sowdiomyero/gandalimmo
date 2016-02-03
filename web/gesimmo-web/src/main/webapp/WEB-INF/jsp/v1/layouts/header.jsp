@@ -27,7 +27,7 @@
     </div>
     <div class="container-fluid" style="border-color:#FF00FF; color:white">
         <!-- Brand and toggle get grouped for better mobile display -->
-        <div class="navbar-header">
+        <div class="navbar-header" style="padding-left: 28px">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
                     data-target="#bs-example-navbar-collapse-1">
                 <span class="sr-only">Toggle navigation</span>
@@ -35,7 +35,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a style="font-weight: bold; color: #fff" class="navbar-brand" href="#">GES-IMMO</a>
+            <a style="font-weight: bold; color: #fff; " class="navbar-brand" href="#">GES-IMMO</a>
         </div>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
@@ -65,19 +65,19 @@
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-weight: bold;color: #fff"><span
-                                class="glyphicon glyphicon-tasks"> </span>  <spring:message code="label.header.programme"  />  <span class="caret"></span></a>
+                                class="glyphicon glyphicon-tasks"> </span>  <spring:message code="label.header.site"  />  <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="${pageContext.request.contextPath}/programme/list" style="font-weight: bold"><span class="glyphicon"> </span> <spring:message code="label.header.programme.list"  /> </a>
+                                <a href="${pageContext.request.contextPath}/programme/list" style="font-weight: bold"><span class="glyphicon"> </span> <spring:message code="label.header.site.list"  /> </a>
                             </li>
                         </ul>
                     </li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" style="font-weight: bold;color: #fff"><span
-                                class="glyphicon glyphicon-tasks"> </span> <spring:message code="label.header.projet"  /> <span class="caret"></span></a>
+                                class="glyphicon glyphicon-tasks"> </span> <spring:message code="label.header.demande"  /> <span class="caret"></span></a>
                         <ul class="dropdown-menu" role="menu">
                             <li>
-                                <a href="${pageContext.request.contextPath}/projet/list" style="font-weight: bold"><span class="glyphicon"> </span> <spring:message code="label.header.projet.list"  /></a>
+                                <a href="${pageContext.request.contextPath}/projet/list" style="font-weight: bold"><span class="glyphicon"> </span> <spring:message code="label.header.demande.list"  /></a>
                             </li>
                         </ul>
                     </li>
