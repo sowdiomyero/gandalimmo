@@ -4,7 +4,7 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <sec:authorize access="isAuthenticated()">
-    <div style="margin: 25px;">
+    <div style="">
         <div class="modal fade " id="localisationModalForm" tabindex="-1" role="dialog"
              aria-labelledby="localisationModalForm" aria-hidden="true" >
             <div class="modal-dialog modal-large2">
@@ -37,7 +37,8 @@
                         
                     </c:if>
 
-                    <c:if test="${localisationForm.dT == 'SITE'}">
+<%--                    
+                        <c:if test="${localisationForm.dT == 'SITE'}">
 
                         <label  for="nbObjetsLocalisation"><spring:message code="label.localisation.tableau.header.nbobjets"/>: </label>
                         <form:input name="nbObjets" class="form-control graviteLocalisation" id="nbObjetsLocalisation" required="required"  path="nbObjets" value="${localisationForm.nbObjets}" />
@@ -48,7 +49,7 @@
                         <label  for="nbNiveauxLocalisation"><spring:message code="label.localisation.tableau.header.nbniveaux"/>: </label>
                         <form:input name="nbNiveaux" class="form-control graviteLocalisation" id="nbNiveauxLocalisation" required="required"  path="nbNiveaux" value="${localisationForm.nbNiveaux}" />
                     </c:if>
-                        
+ --%>
                      <label  for="typeLocalite"><spring:message code="label.localisation.tableau.header.type"/> : </label>
                     <form:select id="typeLocalite" path="type" name="type" class="form-control">
                         <form:options items="${localisationForm.typeIncidentOuLocalite}" />
@@ -62,12 +63,18 @@
                     
                     <form:input type="hidden" path ="oldResponsable" value="${localisationForm.oldResponsable}" />
                     <form:input type="hidden" path ="oldRattachement" value="${localisationForm.oldRattachement}" />
-                     <form:input type="hidden" path ="idLocalisation" value="${localisationForm.idLocalisation}" />
+                    <form:input type="hidden" path ="idLocalisation" value="${localisationForm.idLocalisation}" />
                     
                     <label  for="selectResponsable">Responsable: </label>
                     <form:select id="selectResponsable" path="responsable" name="responsableAttribution" class="form-control">
                         <form:option value="" label=""/> 
                         <form:options items="${localisationForm.listResponsables}" itemLabel="fullName"  itemValue="idUser" />
+                    </form:select>
+              
+                    <label class="pull-left" for="selectZone">Zone : </label>
+                    <form:select id="selectZone" path="zone" title="${localisationForm.zone}" class="form-control">
+                        <form:option value="" label=""/> 
+                        <form:options items="${localisationForm.zones}" />
                     </form:select>
                 </fieldset>
             </div>

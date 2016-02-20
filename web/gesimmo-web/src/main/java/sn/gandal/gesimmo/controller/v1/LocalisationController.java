@@ -1,6 +1,7 @@
 package sn.gandal.gesimmo.controller.v1;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -16,9 +17,9 @@ import sn.gandal.gesimmo.dto.BasicResponse;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.validation.BindingResult;
-import sn.gandal.gesimmo.dto.DtoConverterUtils;
+import sn.gandal.gesimmo.metier.GesImmoServiceManager;
 
 import sn.gandal.gesimmo.metier.services.IIndicateurMetier;
 import sn.gandal.gesimmo.metier.services.IProjetMetier;
@@ -29,9 +30,11 @@ import sn.gandal.gesimmo.modele.client.entities.LocalisationIndicateur;
 import sn.gandal.gesimmo.modele.client.entities.ObjetIncident;
 import sn.gandal.gesimmo.modele.client.entities.BatimentLocalite;
 import sn.gandal.gesimmo.modele.client.entities.Compte;
+import sn.gandal.gesimmo.modele.client.entities.Niveau;
 import sn.gandal.gesimmo.modele.client.entities.SiteLocalite;
 import sn.gandal.gesimmo.modele.client.entities.TableConfig;
 import sn.gandal.gesimmo.modele.client.entities.User;
+import sn.gandal.gesimmo.modele.client.entities.Zone;
 import sn.gandal.gesimmo.modele.client.tools.LocalisationFormFilter;
 import sn.gandal.gesimmo.modele.client.tools.ParamEntity;
 
@@ -53,39 +56,151 @@ public class LocalisationController {
     IGesimmoMetier gesimmoMetier;
 
     @Autowired
+    GesImmoServiceManager serviceManager;
+
+    @Autowired
     IIndicateurMetier IndicateurMetier;
 
     private long idLocalisationSaisi = 0;
+    
     private String DTypeSelectionne = null;
+    
+    FormPopulationHelper helper = new FormPopulationHelper();
 
     Logger LOG = Logger.getLogger(LocalisationController.class.getName());
 
     @RequestMapping(value = "/list")
     public String localisationListForm(Model model) {
-        EditLocalisationForm localisationForm =  new EditLocalisationForm();
+        EditLocalisationForm localisationForm = new EditLocalisationForm();
         List<Localisation> elements = localisationMetier.findLocalisationByEtat(Localisation.ETAT.FONCTIONNEL);
         model.addAttribute("localisations", elements);
-        if(elements.size()>0){
-          model.addAttribute("localisationSelected", elements.get(0));
-        /**
-         * *********************
-         */
-            localisationForm =  DtoConverterUtils.convert(elements.get(0));
-            localisationForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
-            localisationForm.setResponsables(gesimmoMetier.findAllResponsables());
-            localisationForm.setListResponsables(gesimmoMetier.findAllUsers());
-            localisationForm.setdType(gesimmoMetier.getTypeLicenceLocalite());                                                        
+        if (elements.size() > 0) {
+            model.addAttribute("localisationSelected", elements.get(0));
+            localisationForm = helper.getCompletedLocalisationForm(elements.get(0), serviceManager);
             model.addAttribute("localisationForm", localisationForm);
+            
+            BatimentForm batimmentForm = new BatimentForm();
+        Localisation loc =elements.get(0);
+        batimmentForm.setIdLocalisation(loc.getIdLocalisation());
+        batimmentForm.setLongitude(loc.getLongitude());
+        batimmentForm.setLatitude(loc.getLatitude());
+        batimmentForm.setZone(loc.getZone() != null ? loc.getZone().getIdZone().toString(): "");
+        batimmentForm.setResponsable(loc.getAttribution()!= null ? loc.getAttribution().toString():"");
+        batimmentForm.setRattachement(loc.getIdLocalisation().toString());
+        batimmentForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
+        batimmentForm.setResponsables(gesimmoMetier.findAllResponsables());
+        batimmentForm.setListResponsables(gesimmoMetier.findAllUsers());
+        batimmentForm.setZones(serviceManager.getZoneService().getAllZones());
+        batimmentForm.setTypesBatiment(BatimentLocalite.getAllTypes());
+        batimmentForm.setEtatsBatiment(Localisation.getAllEtats());
+        model.addAttribute("batimentForm", batimmentForm);
+        
+        NiveauForm niveauForm =  new NiveauForm();
+        if(loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
+          BatimentLocalite batm=  (BatimentLocalite) loc;
+          niveauForm.setLevels( batm.exclureNiveauxSaisis());
+          niveauForm.setEtats( Niveau.getEtatCollection());
         }
+        model.addAttribute("niveauForm",niveauForm);
+        }else{
+          model.addAttribute("localisationForm", null);  
+          model.addAttribute("batimentForm", null);
+          model.addAttribute("niveauForm", null);
+        }
+        
+        
         /**
          * *********************
          */
         LocalisationFormFilter localisationFormFilter;
         localisationFormFilter = new LocalisationFormFilter();
         localisationFormFilter.setdType(gesimmoMetier.getTypeLicenceLocalite());
-        model.addAttribute("localisationFormFilter", localisationFormFilter);      
+        model.addAttribute("localisationFormFilter", localisationFormFilter);
 
-        getCurrentUserName();
+        FilterLocalisationForm filterLocalisationForm = new FilterLocalisationForm();
+        filterLocalisationForm.populateEtatsList(Arrays.asList(Localisation.ETAT.values()));
+        filterLocalisationForm.setEtatSaisi("");
+        filterLocalisationForm.setZones(serviceManager.getZoneService().getAllZones());
+        filterLocalisationForm.setZoneSaisi("");
+        filterLocalisationForm.setObjets(gesimmoMetier.getTypeLicenceLocalite());
+        filterLocalisationForm.setObjetSaisi("");
+        model.addAttribute("filterLocalisationForm", filterLocalisationForm);
+
+        //getCurrentUserName();
+        
+        return "localisation/list";
+    }
+
+    @RequestMapping(value = "/filtrer", method = RequestMethod.GET)
+    public String getLocalisationListFiltered(Model model,
+            @RequestParam(value = "objetSaisi") String dtype,
+            @RequestParam(value = "zoneSaisi") String zone,
+            @RequestParam(value = "etatSaisi") String etat
+    ) {
+
+        List<Localisation> allLocalites = localisationMetier.findAllLocalisations();
+        if (dtype != null && !dtype.equalsIgnoreCase("ALL")) {
+            allLocalites = filterLocalite(allLocalites, "DTYPE", dtype);
+        }
+        if (zone != null && !zone.equalsIgnoreCase("ALL")) {
+            allLocalites = filterLocalite(allLocalites, "ZONE", zone);
+        }
+        if (etat != null && !etat.equalsIgnoreCase("ALL")) {
+            allLocalites = filterLocalite(allLocalites, "ETAT", etat);
+        }
+
+        model.addAttribute("localisations", allLocalites);
+        if (allLocalites.size() > 0) {
+            model.addAttribute("localisationSelected", allLocalites.get(0));
+            EditLocalisationForm localisationForm = helper.getCompletedLocalisationForm(allLocalites.get(0), serviceManager);
+                        
+            BatimentForm batimmentForm = new BatimentForm();
+            Localisation loc =allLocalites.get(0);
+            batimmentForm.setIdLocalisation(loc.getIdLocalisation());
+            batimmentForm.setLongitude(loc.getLongitude());
+            batimmentForm.setLatitude(loc.getLatitude());
+            batimmentForm.setZone(loc.getZone() != null ? loc.getZone().getIdZone().toString(): "");
+            batimmentForm.setRattachement(loc.getIdLocalisation().toString());
+            batimmentForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
+            batimmentForm.setResponsable(loc.getAttribution()!= null ? loc.getAttribution().toString():"");
+            batimmentForm.setResponsables(gesimmoMetier.findAllResponsables());
+            batimmentForm.setListResponsables(gesimmoMetier.findAllUsers());
+            batimmentForm.setZones(serviceManager.getZoneService().getAllZones());
+            batimmentForm.setTypesBatiment(BatimentLocalite.getAllTypes());
+            batimmentForm.setEtatsBatiment(Localisation.getAllEtats()); 
+            
+            model.addAttribute("localisationForm", localisationForm); 
+            model.addAttribute("batimentForm", batimmentForm);
+            
+            NiveauForm niveauForm =  new NiveauForm();
+            if(loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
+              BatimentLocalite batm=  (BatimentLocalite) loc;
+                niveauForm.setLevels( batm.exclureNiveauxSaisis());
+                 niveauForm.setEtats( Niveau.getEtatCollection());
+            }
+            model.addAttribute("niveauForm", niveauForm);
+        } else {
+            model.addAttribute("localisationForm", null);
+            model.addAttribute("localisationSelected", null);
+            model.addAttribute("batimentForm", null);
+            model.addAttribute("niveauForm", null);
+        }
+
+        /**
+         * *********************
+         */
+        FilterLocalisationForm filterLocalisationForm;
+        filterLocalisationForm = new FilterLocalisationForm();
+        filterLocalisationForm.populateEtatsList(Arrays.asList(Localisation.ETAT.values()));
+        filterLocalisationForm.setEtatSaisi(etat);
+        filterLocalisationForm.setZones(serviceManager.getZoneService().getAllZones());
+        filterLocalisationForm.setZoneSaisi(zone);
+        filterLocalisationForm.setObjets(gesimmoMetier.getTypeLicenceLocalite());
+        filterLocalisationForm.setObjetSaisi(dtype);
+        model.addAttribute("filterLocalisationForm", filterLocalisationForm);
+
+        //getCurrentUserName();
+        
         return "localisation/list";
     }
 
@@ -93,30 +208,43 @@ public class LocalisationController {
     @RequestMapping(value = "view/{id}", method = RequestMethod.GET)
     public String getLolcalisation(@PathVariable(value = "id") Long idLocalisation, Model model) {
       // EditLocalisationForm formBinding = new EditLocalisationForm();
-       //1 - peuler l'objet dto qui devra contenir toutes les informations ncessaires
-        
-       Localisation loc = localisationMetier.getLocalisationById(idLocalisation);
-       EditLocalisationForm localisationForm =  DtoConverterUtils.convert(loc);
-       localisationForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
-       localisationForm.setResponsables(gesimmoMetier.findAllResponsables());
-       localisationForm.setListResponsables(gesimmoMetier.findAllUsers());
-       localisationForm.setdType(gesimmoMetier.getTypeLicenceLocalite());
-                                                        
-       //2 - Pour assurer la compatibilité ascendante, mainetenir l'objet localisationSelected avec le type actuel
-              //il faut verifier les dtype de la licence
+        //1 - peuler l'objet dto qui devra contenir toutes les informations ncessaires
 
-        // TODO A GERER DANS UN OBJECT LicenceContent plus global à la gestion des licences dans une seule methode metier
+        Localisation loc = localisationMetier.getLocalisationById(idLocalisation);
         
-       //3 - Verifier l'état du formulaire
-       
-       model.addAttribute("localisationSelected", loc);
-       model.addAttribute("localisationForm", localisationForm);
-       
-       model.addAttribute("responsables", gesimmoMetier.findAllResponsables());
+        EditLocalisationForm localisationForm = helper.getCompletedLocalisationForm(loc, serviceManager);
+     
+        model.addAttribute("localisationSelected", loc);
+        model.addAttribute("localisationForm", localisationForm);
         
-       return "fragment/localisation/view";
+        BatimentForm batimmentForm = new BatimentForm();
+        batimmentForm.setIdLocalisation(idLocalisation);
+        batimmentForm.setLongitude(loc.getLongitude());
+        batimmentForm.setLatitude(loc.getLatitude());
+        batimmentForm.setZone(loc.getZone() != null ? loc.getZone().getIdZone().toString(): "");
+        batimmentForm.setResponsable(loc.getAttribution()!= null ? loc.getAttribution().toString():"");
+        batimmentForm.setRattachement(loc.getIdLocalisation().toString());
+        batimmentForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
+        batimmentForm.setResponsables(gesimmoMetier.findAllResponsables());
+        batimmentForm.setListResponsables(gesimmoMetier.findAllUsers());
+        batimmentForm.setZones(serviceManager.getZoneService().getAllZones());
+        batimmentForm.setTypesBatiment(BatimentLocalite.getAllTypes());
+        batimmentForm.setEtatsBatiment(Localisation.getAllEtats());
+        model.addAttribute("batimentForm", batimmentForm);
+
+        model.addAttribute("responsables", gesimmoMetier.findAllResponsables());
+        
+        NiveauForm niveauForm =  new NiveauForm();
+            if(loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
+              BatimentLocalite batm=  (BatimentLocalite) loc;
+                niveauForm.setLevels( batm.exclureNiveauxSaisis());
+                 niveauForm.setEtats( Niveau.getEtatCollection());
+            }
+        model.addAttribute("niveauForm", niveauForm);
+        
+        return "fragment/localisation/view";
     }
-    
+
     @RequestMapping(value = "/view", method = RequestMethod.GET)
     public @ResponseBody
     EditLocalisationForm getLolcalisation(@RequestParam(value = "idLocalisation") Long idLocalisation, @RequestParam(value = "dtype") String dtype) {
@@ -149,7 +277,7 @@ public class LocalisationController {
             return editLolcalisation;
         }
         if (dtype.equals(TableConfig.DTYPE_INCIDENT)) {
-            ObjetIncident localisation ;//= new ObjetIncident();
+            ObjetIncident localisation;//= new ObjetIncident();
             DTypeSelectionne = TableConfig.DTYPE_INCIDENT;
             localisation = (ObjetIncident) localisationMetier.getLocalisationById(idLocalisation);
             if (localisation == null) {
@@ -183,24 +311,24 @@ public class LocalisationController {
     EditLocalisationForm editLolcalisation(@RequestBody @Valid EditLocalisationForm editLocaliteForm, HttpServletRequest request) {
 
         Long idLocalisation = editLocaliteForm.getIdLocalisation();
-        
-        if(editLocaliteForm.getdT().equalsIgnoreCase(TableConfig.DTYPE_SITE)){
-          SiteLocalite currentLocalisation = (SiteLocalite) localisationMetier.getLocalisationById(idLocalisation); 
+
+        if (editLocaliteForm.getdT().equalsIgnoreCase(TableConfig.DTYPE_SITE)) {
+            SiteLocalite currentLocalisation = (SiteLocalite) localisationMetier.getLocalisationById(idLocalisation);
             setDefaultParams(currentLocalisation, editLocaliteForm);
-            currentLocalisation.setNbObjets(Integer.valueOf(editLocaliteForm.getNbObjets()));            
+           // currentLocalisation.setNbObjets(Integer.valueOf(editLocaliteForm.getNbObjets()));
             localisationMetier.updateLocalisation(currentLocalisation);
-        }else if(editLocaliteForm.getdT().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
-            BatimentLocalite currentLocalisation = (BatimentLocalite) localisationMetier.getLocalisationById(idLocalisation); 
+        } else if (editLocaliteForm.getdT().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)) {
+            BatimentLocalite currentLocalisation = (BatimentLocalite) localisationMetier.getLocalisationById(idLocalisation);
             setDefaultParams(currentLocalisation, editLocaliteForm);
-             currentLocalisation.setNbNiveaux(Integer.valueOf(editLocaliteForm.getNbNiveaux()));
+            //currentLocalisation.setNbNiveaux(Integer.valueOf(editLocaliteForm.getNbNiveaux()));
             localisationMetier.updateLocalisation(currentLocalisation);
-        }else if(editLocaliteForm.getdT().equalsIgnoreCase(TableConfig.DTYPE_INCIDENT)){
-            ObjetIncident currentLocalisation = (ObjetIncident) localisationMetier.getLocalisationById(idLocalisation); 
+        } else if (editLocaliteForm.getdT().equalsIgnoreCase(TableConfig.DTYPE_INCIDENT)) {
+            ObjetIncident currentLocalisation = (ObjetIncident) localisationMetier.getLocalisationById(idLocalisation);
             setDefaultParams(currentLocalisation, editLocaliteForm);
             currentLocalisation.setGravite(editLocaliteForm.getGravite());
             localisationMetier.updateLocalisation(currentLocalisation);
         }
-        
+
         editLocaliteForm.setMsg("Objet modifié avec succès !");
         editLocaliteForm.setResultat(Subscriber.RETOUR_OK);
         return editLocaliteForm;
@@ -210,7 +338,7 @@ public class LocalisationController {
     @RequestMapping(value = "/affecterResponsable", method = RequestMethod.POST)
     public @ResponseBody
     EditUserForm affecterResponsableLolcalisation(@RequestBody @Valid EditUserForm editUserForm, HttpServletRequest request) {
-        System.out.println("-----------------" + editUserForm.getIdUser());
+
         User responsable = gesimmoMetier.findUserById(editUserForm.getIdUser());
         Localisation localisation = localisationMetier.getLocalisationById(idLocalisationSaisi);
         localisation.setUser(responsable);
@@ -355,35 +483,9 @@ public class LocalisationController {
 
     }
 
-    @RequestMapping(value = "/delete")
+    @RequestMapping(value = "/new", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
-    BasicResponse deleteLocalisation(@RequestParam(value = "idLocalisation") Long idLocalisation, Model model) {
-        BasicResponse response = new BasicResponse();
-        Localisation locToFind = (Localisation) localisationMetier.getLocalisationById(idLocalisation);
-        try {
-            if (locToFind != null) {
-                locToFind.setEtat(Localisation.ETAT.SUPPRIME);
-                localisationMetier.updateLocalisation(locToFind);
-                response.setMsg("L'objet localisable [" + locToFind.getNomLocalisable() + "] a été supprimé de la base de données avec succes");
-                response.setResultat(BasicResponse.RETOUR_OK);
-                return response;
-            } else {
-                response.setMsg("L'objet localisable est introuvable");
-                response.setResultat(BasicResponse.RETOUR_OBJECT_NOT_FOUND);
-                return response;
-            }
-
-        } catch (Exception ex) {
-            response.setMsg(ex.getMessage() + " " + idLocalisation + " ");
-            response.setResultat(BasicResponse.RETOUR_ACTION_NOT_ALLOWED);
-            return response;
-        }
-
-    }
-
-    @RequestMapping(value = "/new", method = RequestMethod.POST, consumes = "application/json")
-    public @ResponseBody
-    EditLocalisationForm addLocalisation(@RequestBody @Valid EditLocalisationForm localisationForm, HttpServletRequest request, Model m) {
+    EditLocalisationForm addLocalisation(@RequestBody EditLocalisationForm localisationForm, HttpServletRequest request, Model m) {
         /* ENREGISTREMENT DES DONNEES DANS LA BASE */
         try {
             String dtype = localisationForm.getdT();
@@ -396,9 +498,11 @@ public class LocalisationController {
             String longitude = gps[1];
             String Ratt = localisationForm.getRattachement();
             String resp = localisationForm.getResponsable();
-            
+
+            String zone = localisationForm.getZone();
+
             String userName = getCurrentUserName();
-            LOG.log(Level.INFO, "Username recuperé : "+userName);
+            LOG.log(Level.INFO, "Username recuperé : " + userName);
             Localisation locFind = null;
             if (!Ratt.equals("")) {
                 Long idRatt = Long.parseLong(Ratt);
@@ -406,23 +510,31 @@ public class LocalisationController {
             }
             User responsable = null;
             if (resp != null && !resp.equals("")) {
-                try{
-                    Long idResponsable = Long.parseLong(resp);                
+                try {
+                    Long idResponsable = Long.parseLong(resp);
                     responsable = (User) gesimmoMetier.findEntityById(idResponsable, User.class);
-                }catch(Exception ex){
-                    LOG.severe("On a tenté d'ajouter un responsable avec un ID inconnu : ID : "+resp);
+                } catch (Exception ex) {
+                    LOG.severe("On a tenté d'ajouter un responsable avec un ID inconnu : ID : " + resp);
                 }
-                
+
             }
-            
+            Zone zoneObjet = null;
+            if (zone != null && !zone.equals("")) {
+                try {
+                    zoneObjet = (Zone) gesimmoMetier.findEntityById(Long.parseLong(zone), Zone.class);
+                } catch (Exception ex) {
+                    LOG.severe("On a tenté d'ajouter une Zone avec un ID inconnu : ID : " + zone);
+                }
+            }
+
             User createur = null;
             Compte cpt = gesimmoMetier.findAccountByLogin(userName);
-            
+
             if (cpt != null && cpt.getUser() != null) {
                 createur = cpt.getUser();
-                
+
             }
-            
+
             if (dtype.equals(TableConfig.DTYPE_BATIMENT)) {
                 BatimentLocalite localisation = new BatimentLocalite();
                 localisation.setNomLocalisable(localisationForm.getNom());
@@ -436,7 +548,8 @@ public class LocalisationController {
                 localisation.setAttribution(responsable);
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
-                localisation.setNbNiveaux(Integer.parseInt(localisationForm.getNbNiveaux()));
+               // localisation.setNbNiveaux(Integer.parseInt(localisationForm.getNbNiveaux()));
+                localisation.setZone(zoneObjet);
                 Localisation localisationCreated = localisationMetier.saveLocalisation(localisation);
 
                 localisationForm = new EditLocalisationForm();
@@ -457,16 +570,14 @@ public class LocalisationController {
                 localisation.setGravite(localisationForm.getGravite());
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
-
+                localisation.setZone(zoneObjet);
                 Localisation localisationCreated = localisationMetier.saveLocalisation(localisation);
 
                 localisationForm = new EditLocalisationForm();
                 localisationForm.setResultat(localisationForm.RETOUR_OK);
                 localisationForm.setMsg("Objet localisable crée avec succès avec les informations suivantes : [ nom =  " + localisationCreated.getNomLocalisable() + " ]");
                 m.addAttribute("localisationForm", localisationForm);
-            }
-            
-            else if (dtype.equals(TableConfig.DTYPE_SITE)) {
+            } else if (dtype.equals(TableConfig.DTYPE_SITE)) {
                 SiteLocalite localisation = new SiteLocalite();
                 localisation.setNomLocalisable(localisationForm.getNom());
                 localisation.setClef(clef);
@@ -477,9 +588,10 @@ public class LocalisationController {
                 localisation.setParentLocalisation(locFind);
                 localisation.setCreateur(createur);
                 localisation.setAttribution(responsable);
-                localisation.setNbObjets(Integer.parseInt(localisationForm.getNbObjets()));
+                //localisation.setNbObjets(Integer.parseInt(localisationForm.getNbObjets()));
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
+                localisation.setZone(zoneObjet);
                 Localisation localisationCreated = localisationMetier.saveLocalisation(localisation);
 
                 localisationForm = new EditLocalisationForm();
@@ -497,6 +609,12 @@ public class LocalisationController {
 
     }
 
+    /**
+     * Appelé par googleMap pour remplir la carte
+     *
+     * @param type
+     * @return
+     */
     @RequestMapping(value = "/charger", method = RequestMethod.GET)
     public @ResponseBody
     String[][] getLocaliteByType(@RequestParam(value = "type") String type) {
@@ -530,15 +648,16 @@ public class LocalisationController {
         locs.addAll(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
         localisationForm.setRattachements(locs);
         localisationForm.setResponsables(gesimmoMetier.findAllResponsables());
-        //il faut verifier les dtype de la licence
-        List<String> licencesObjetType = gesimmoMetier.getTypeLicenceLocalite();
+        localisationForm.setZones(serviceManager.getZoneService().getAllZones());
 
+        List<String> licencesObjetType = gesimmoMetier.getTypeLicenceLocalite();
+        //il faut verifier les dtype de la licence
         // TODO A GERER DANS UN OBJECT LicenceContent plus global à la gestion des licences dans une seule methode metier
         if (licencesObjetType != null && licencesObjetType.size() > 0) {
             localisationForm.setResultat(BasicResponse.RETOUR_GOOD_LICENCE);
             localisationForm.setMsg("Success");
             localisationForm.setdT(licencesObjetType.get(0));
-            localisationForm.setTypeIncidentOuLocalite(getTypeOfDtypeElements(licencesObjetType.get(0)));            
+            localisationForm.setTypeIncidentOuLocalite(getTypeOfDtypeElements(licencesObjetType.get(0)));
         } else {
             // RENOYER UNE BasicResponse avec code specifique
             localisationForm.setResultat(BasicResponse.RETOUR_DAB_LICENCE);
@@ -580,124 +699,62 @@ public class LocalisationController {
         locs.addAll(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
         localisationForm.setRattachements(locs);
         localisationForm.setResponsables(gesimmoMetier.findAllResponsables());
-        localisationForm.setTypeIncidentOuLocalite(getTypeOfDtypeElements(type)); 
-//        if (type.equals(TableConfig.DTYPE_BATIMENT)) {
-//            localisationForm.setTypeIncidentOuLocalite(BatimentLocalite.getAllTypes());
-//        }
-//        if (type.equals(TableConfig.DTYPE_INCIDENT)) {
-//            localisationForm.setTypeIncidentOuLocalite(ObjetIncident.getAllTypes());
-//        }
-//        if (type.equals(TableConfig.DTYPE_SITE)) {
-//            localisationForm.setTypeIncidentOuLocalite(SiteLocalite.getAllTypes());
-//        }
+        localisationForm.setZones(serviceManager.getZoneService().getAllZones());
+        localisationForm.setTypeIncidentOuLocalite(getTypeOfDtypeElements(type));
         localisationForm.setdType(licencesObjetType);
         localisationForm.setdT(type);
-
         model.addAttribute("localisationForm", localisationForm);
 
         return "fragment/localisation/new";
 
     }
 
-    @RequestMapping(value = "localisationListFilter/load/localite/categorie", method = RequestMethod.GET)
-    public String getLocaliteFormBy(Model model, @RequestParam(value = "categorie") String categorie) {
-        LocalisationFormFilter localisationFormFilter = new LocalisationFormFilter();
-        localisationFormFilter.setdT(categorie);
-        LOG.info("***************************categorie:" + categorie + " ****************************");
-        localisationFormFilter.setdType(gesimmoMetier.getTypeLicenceLocalite());
-        localisationFormFilter.setTypeIncidentOuLocalite(getTypeOfDtypeElements(categorie));
-        localisationFormFilter.getTypeIncidentOuLocalite().add("ALL");
-        model.addAttribute("localisationFormFilter", localisationFormFilter);
-
-        return "fragment/menu_localisation";
-
-    }
-
+//    @RequestMapping(value = "localisationListFilter/load/localite/categorie", method = RequestMethod.GET)
+//    public String getLocaliteFormBy(Model model, @RequestParam(value = "categorie") String categorie) {
+//        LocalisationFormFilter localisationFormFilter = new LocalisationFormFilter();
+//        localisationFormFilter.setdT(categorie);
+//        LOG.info("***************************categorie:" + categorie + " ****************************");
+//        localisationFormFilter.setdType(gesimmoMetier.getTypeLicenceLocalite());
+//        localisationFormFilter.setTypeIncidentOuLocalite(getTypeOfDtypeElements(categorie));
+//        localisationFormFilter.getTypeIncidentOuLocalite().add("ALL");
+//        model.addAttribute("localisationFormFilter", localisationFormFilter);
+//
+//        return "fragment/menu_localisation";
+//
+//    }
     private List<String> getTypeOfDtypeElements(String categorie) {
         if (categorie.equals(TableConfig.DTYPE_BATIMENT)) {
             return BatimentLocalite.getAllTypes();
-        }else  if (categorie.equals(TableConfig.DTYPE_INCIDENT)) {
+        } else if (categorie.equals(TableConfig.DTYPE_INCIDENT)) {
             return ObjetIncident.getAllTypes();
-        }else if (categorie.equals(TableConfig.DTYPE_SITE)) {
+        } else if (categorie.equals(TableConfig.DTYPE_SITE)) {
             return SiteLocalite.getAllTypes();
-        }else{
+        } else {
             return new ArrayList<String>();
         }
-        
-    }
-
-    @RequestMapping(value = "localisationListFilterCarte/load/localite/categorie", method = RequestMethod.GET)
-    public String getLocaliteCarteFilterBy(Model model, @RequestParam(value = "categorie") String categorie) {
-        LocalisationFormFilter localisationFormFilter = new LocalisationFormFilter();
-        localisationFormFilter.setdT(categorie);
-        LOG.info("***************************categorie:" + categorie + " ****************************");
-        localisationFormFilter.setdType(gesimmoMetier.getTypeLicenceLocalite());
-        localisationFormFilter.setTypeIncidentOuLocalite(getTypeOfDtypeElements(categorie));
-        localisationFormFilter.getTypeIncidentOuLocalite().add("ALL");
-        model.addAttribute("localisationFormFilter", localisationFormFilter);
-
-        return "fragment/localisation/search/form";
 
     }
 
-    @RequestMapping(value = "/localisationListFilter", method = RequestMethod.POST)
-    public String projetListFilter(@ModelAttribute LocalisationFormFilter localisationFormFilter, BindingResult result, Model model) {
-        try {
-            LOG.info("***************************start  filtre localisation ****************************");
-            if (result.hasErrors()) {
-                return "localisationList";
-            }
-            List<Localisation> listLocalisationFilter = localisationMetier.findLocalisationByCriteres(localisationFormFilter);
-            LOG.log(Level.INFO, "***************************exception  filtre projet ****************************{0}", listLocalisationFilter.size());
-            model.addAttribute("localisations", listLocalisationFilter);
-
-            model.addAttribute("localisationFormFilter", localisationFormFilter);
-            return "localisation/list";
-        } catch (Exception e) {
-            LOG.log(Level.INFO, "***************************exception  filtre projet ****************************{0}", e.getMessage());
-            return "localisation/list";
-        }
-    }
-
-    @RequestMapping(value = "/localisationListFilterCarte", method = RequestMethod.POST, consumes = "application/json")
-    public  @ResponseBody String[][] projetListFilterCarte(@RequestBody @Valid LocalisationFormFilter localisationFormFilter, BindingResult result, Model model) {
-        String[][] locations = null;
-//        try {
-            if (localisationFormFilter.getdT().equalsIgnoreCase(TableConfig.DTYPE_LOCALITE)) {
-                List<BatimentLocalite> listLocalisationFilter = localisationMetier.findLocaliteByCriteres(localisationFormFilter);
-                return localisationMetier.findAllTLocaliteFilterArray(listLocalisationFilter);
-            }
-            if (localisationFormFilter.getdT().equalsIgnoreCase(TableConfig.DTYPE_INCIDENT)) {
-                List<ObjetIncident> listLocalisationFilter = localisationMetier.findIncidentByCriteres(localisationFormFilter);
-                return localisationMetier.findAllTIncidentFilterArray(listLocalisationFilter);
-            }
-//
-//        } catch (Exception e) {
-//            logger.log(Level.INFO, "***************************exception  filtre localisation ****************************{0}", e.getMessage());
-//        }
-        return locations;
-
-    }
-    
     @RequestMapping(value = "/verify/key/{id}", method = RequestMethod.GET, produces = "application/json")
     public @ResponseBody
     BasicResponse verifyIfKeyExist(@PathVariable(value = "id") String key, HttpServletRequest request) {
-      BasicResponse response = new BasicResponse();
-      response.setMsg("Clef existe dejà");
-      response.setResultat(BasicResponse.RETOUR_ID_INVALID);
-      if(!localisationMetier.isKeyExist(key))
-          response.setResultat(BasicResponse.RETOUR_OK);
-      return response;
+        BasicResponse response = new BasicResponse();
+        response.setMsg("Clef existe dejà");
+        response.setResultat(BasicResponse.RETOUR_ID_INVALID);
+        if (!localisationMetier.isKeyExist(key)) {
+            response.setResultat(BasicResponse.RETOUR_OK);
+        }
+        return response;
 
     }
-    
-    private String getCurrentUserName(){
-            String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-            LOG.log(Level.INFO, "Username recuperé : "+userName);            
-            return userName;
+
+    private String getCurrentUserName() {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        LOG.log(Level.INFO, "Username recuperé : " + userName);
+        return userName;
     }
-    
-    private void setDefaultParams (Localisation currentLocalisation, EditLocalisationForm editLocaliteForm){
+
+    private void setDefaultParams(Localisation currentLocalisation, EditLocalisationForm editLocaliteForm) {
         currentLocalisation.setNomLocalisable(editLocaliteForm.getNom());
         //String nom = editLocaliteForm.getNom();
         //String desc = editLocaliteForm.getDescription();
@@ -708,28 +765,71 @@ public class LocalisationController {
         //currentLocalisation.set
         String oldRattachementId = editLocaliteForm.getOldRattachement();
         String rattachementId = editLocaliteForm.getRattachement();
-        
+
         String oldResponsableId = editLocaliteForm.getOldResponsable();
-        String responsableId  = editLocaliteForm.getResponsable();
-        
-        
+        String responsableId = editLocaliteForm.getResponsable();
+
+        String oldZoneId = editLocaliteForm.getOldZone();
+        String zoneId = editLocaliteForm.getZone();
+
         User attribution = null;
         Localisation rattachement = null;
-        
-        if (rattachementId != null && !rattachementId.equals("") ) {    
-            if(!oldRattachementId.equalsIgnoreCase(rattachementId)){
+        Zone zone = null;
+
+        if (rattachementId != null && !rattachementId.equals("")) {
+            if (!oldRattachementId.equalsIgnoreCase(rattachementId)) {
                 rattachement = localisationMetier.getLocalisationById(Long.valueOf(rattachementId));
                 currentLocalisation.setParentLocalisation(rattachement);
-            }            
+            }
         }
-        
-        if ( responsableId != null && !responsableId.equals("")) {
-            if( !oldResponsableId.equalsIgnoreCase(responsableId)){
+        // dans le cas d'une suppression du rattachement
+        if(rattachementId != null && rattachementId.equalsIgnoreCase("")){
+            if(oldRattachementId != null && !oldRattachementId.equalsIgnoreCase("")){
+                currentLocalisation.setParentLocalisation(null);
+            }
+        }
+
+        if (responsableId != null && !responsableId.equals("")) {
+            if (!oldResponsableId.equalsIgnoreCase(responsableId)) {
                 attribution = gesimmoMetier.findUserById(Long.valueOf(responsableId));
                 currentLocalisation.setAttribution(attribution);
             }
         }
-        
-        
+
+        if (zoneId != null && !zoneId.equals("")) {
+            if (oldZoneId == null || !oldZoneId.equalsIgnoreCase(zoneId)) {
+                zone = (Zone) gesimmoMetier.findEntityById(Long.valueOf(zoneId), Zone.class);
+                currentLocalisation.setZone(zone);
+            }
+        }
+    }
+
+    private List<Localisation> filterLocalite(List<Localisation> allLocalites, String type, String value) {
+        List<Localisation> resultat = new ArrayList<Localisation>();
+        if (type != null && type.equalsIgnoreCase("DTYPE")) {
+            for (Localisation loc : allLocalites) {
+                if (loc.getDType().equalsIgnoreCase(value)) {
+                    resultat.add(loc);
+                }
+            }
+            return resultat;
+        }
+        if (type != null && type.equalsIgnoreCase("ZONE")) {
+            for (Localisation loc : allLocalites) {
+                if (loc.getZone() != null && loc.getZone().getIdZone().toString().equalsIgnoreCase(value)) {
+                    resultat.add(loc);
+                }
+            }
+            return resultat;
+        }
+        if (type != null && type.equalsIgnoreCase("ETAT")) {
+            for (Localisation loc : allLocalites) {
+                if (loc.getEtat().name().equalsIgnoreCase(value)) {
+                    resultat.add(loc);
+                }
+            }
+            return resultat;
+        }
+        return allLocalites;
     }
 }

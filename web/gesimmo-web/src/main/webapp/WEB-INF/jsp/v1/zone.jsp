@@ -129,29 +129,20 @@
               dataType: 'json',
               data: JSON.stringify(data),
               success: function(callback) {
-
-
                   if (callback.resultat === 200) {
                       $.notify(callback.msg, "success");
                       setTimeout(function() {
-                                  window.close();
+                                  window.location.reload();
                               },
-                              6000
+                              3000
                       );
 
                   } else {
                           $.notify(callback.msg, "error");
-                          setTimeout(function() {
-                                      window.close();
-                                  },
-                                  6000
-                          );
                       }
 
               },
               error: function() {
-                  //$('#confirmationContent').html("Une erreur est survenue pendant l'ajout de l'utilisateur");
-                  //alert("Une erreur est survenue pendant la vérification");
                   $.notify("Une erreur est survenue pendant la vérification", "error");
               }
           });

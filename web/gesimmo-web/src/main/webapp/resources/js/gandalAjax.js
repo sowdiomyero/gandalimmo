@@ -109,31 +109,42 @@ $(document).ready(function() {
         
     });
     
-//   $(document).on('click','#btnLocalisationMapModalForm',function(e) {       
-//       
-//        var idLocalite = $(this).attr('data-id');
-//        var nomLocalite = $(this).attr('data-nom');
-//        
-//        var lat = parseFloat($(this).attr('data-lat')) ;
-//        var lon = parseFloat($(this).attr('data-lon'));
-//        var myLatLng = {lat: lat, lng: lon};
-//
-//        var map = new google.maps.Map(document.getElementById('show-map'), {
-//          zoom: 15,
-//          center: myLatLng
-//        });
-//
-//        var marker = new google.maps.Marker({
-//          position: myLatLng,
-//          map: map,
-//          title: nomLocalite
-//        });
-//        window.setTimeout(function () {
-//            google.maps.event.trigger(map, 'resize')
-//        }, 1000);
-//        map.setCenter(myLatLng);
-//        //google.maps.event.trigger(map, "resize");
-//
-//    });
+    $(document).on('submit','#addLocalisationModalForm',function(e){
+        var frm = $('#addLocalisationModalForm');
+        e.preventDefault();
+        var data = {};
+        $.each(this, function(i, v) {
+            var input = $(v);
+            data[input.attr("name")] = input.val();
+            delete data["undefined"];
+        });
+        routeController.localisation.update(data, frm);
+        
+    });
+    
+    $(document).on('submit','#addNiveauModalForm',function(e){
+        var frm = $('#addNiveauModalForm');
+        e.preventDefault();
+        var data = {};
+        var tabs = $("#addNiveauModalForm input:checked");
+        $.each(this, function(i, v) {
+            var input = $(v);           
+            data[input.attr("name")] = input.val();
+            delete data["undefined"];
+            delete data["wifi"];
+            delete data["camera"];
+            delete data["ascensseur"];
+            delete data["extincteur"];            
+        });
+        $.each(tabs, function(i, v) {
+           var inp = $(v);   
+           data[inp.attr("name")] = true;
+        });
+        
+        
+        routeController.niveau.addNew(data, frm);
+        
+    });
+
 });
 

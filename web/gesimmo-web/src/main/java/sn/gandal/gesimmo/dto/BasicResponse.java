@@ -6,11 +6,13 @@
 
 package sn.gandal.gesimmo.dto;
 
+import java.io.Serializable;
+
 /**
  *
  * @author MSKANE
  */
-public class BasicResponse {
+public class BasicResponse implements Serializable{
   
     public static final int RETOUR_OK=200;
     public static final int RETOUR_EXCEPTION=-100;

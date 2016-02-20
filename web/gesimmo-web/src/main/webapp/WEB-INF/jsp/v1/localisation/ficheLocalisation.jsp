@@ -6,7 +6,7 @@
 <div class="row" >
     <%@include file="./localisationActionsGroup.jsp" %>
 </div>
-<div class="row" >
+<div class="row" style="margin-top: 2px">
 <!-- INFORMATIONS GENERALES -->
 <div class="col-md-6" >
     <div class="row row-detail-container">  <!-- Début de la premiere ligne de la premiere colonne-->
@@ -93,7 +93,7 @@
             Activites
         </div>
 
-        <div >             
+   <!--     <div >             
             <ul class="nav nav-pills nav-justified" id="tab">
                 <li ><a href="#toutes" data-toggle="tab">Toutes</a></li>
                 <li><a href="#journaux" data-toggle="tab">Journal</a></li>
@@ -106,7 +106,7 @@
                 <div class="tab-pane" id="demandes">Toutes les Demandes en vrac ...</div>
                 <div class="tab-pane" id="activites">Toutes les Activites  en vrac ...</div>
             </div>
-        </div>
+        </div>-->
     </div>
 </div>
 <!-- DEBUT COLONNE DE DROITE -->
@@ -161,7 +161,7 @@
                     <label>Mise à jour:</label>
                 </div>
                 <div class="col-md-6 col-sm-8 col-xs-6">
-                    <fmt:formatDate type="date" value="${localisationSelected.dateCreation}" />
+                    <fmt:formatDate type="date" value="${localisationSelected.dateUpdated}" />
                 </div>
             </div>
         </div>   
@@ -192,12 +192,11 @@
                     <span class="badge">12</span> 
                 </div>
             </div>
-            
-            <div class="row">
-                
+             <!-- Nombre d'étages declaré -->
+<%--            <div class="row">               
                 <c:if test="${localisationSelected.typeLocalisation.trim().equalsIgnoreCase('SITE')}">
                     <div class="col-md-6 col-sm-4 col-xs-6">
-                        <label>Nombre Batiments</label>
+                        <label>Nombre Batiments Déclarés</label>
                     </div>
                     <div class="col-md-6 col-sm-8 col-xs-6">
                         <span class="label label-primary">${localisationSelected.nbObjets} Batiments</span> 
@@ -205,13 +204,36 @@
                 </c:if>
                 <c:if test="${localisationSelected.typeLocalisation.trim().equalsIgnoreCase('BATIMENT')}">
                     <div class="col-md-6 col-sm-4 col-xs-6">
-                        <label>Nombre Niveaux</label>
+                        <label>Nombre Niveaux Déclarés</label>
                     </div>
                     <div class="col-md-6 col-sm-8 col-xs-6">
                         <span class="label label-primary">${localisationSelected.nbNiveaux} Etages</span> 
-                    </div>
+                    </div>                    
                 </c:if>            
             </div>
+--%>
+             
+              <!-- Nombre d'étages/batiments declaré -->
+            <div class="row">               
+                <c:if test="${localisationSelected.typeLocalisation.trim().equalsIgnoreCase('SITE')}">
+                    <div class="col-md-6 col-sm-4 col-xs-6">
+                        <label>Nombre Batiments </label>
+                    </div>
+                    <div class="col-md-6 col-sm-8 col-xs-6">
+                        <span class="label label-warning">${localisationSelected.nbObjetsSaisis} Batiments</span> 
+                    </div>
+                </c:if>
+                <c:if test="${localisationSelected.typeLocalisation.trim().equalsIgnoreCase('BATIMENT')}">
+                    <div class="col-md-6 col-sm-4 col-xs-6">
+                        <label>Nombre Niveaux </label>
+                    </div>
+                    <div class="col-md-6 col-sm-8 col-xs-6">
+                        <span class="label label-warning">${localisationSelected.nbNiveauxSaisis} Etages</span> 
+                    </div>                    
+                </c:if>            
+            </div>
+            
+            
 
             <div class="row">
                 <div class="col-md-6  col-sm-4 col-xs-6">

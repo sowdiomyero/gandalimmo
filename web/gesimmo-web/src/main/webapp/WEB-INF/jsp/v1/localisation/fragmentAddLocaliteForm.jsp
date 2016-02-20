@@ -78,6 +78,15 @@
                                 <form:option value="${mapEntry.key}" label="${mapEntry.value}"/> 
                             </c:forEach>
                     </form:select>
+                    
+                   <label class="pull-left" for="selectZone">Zone : </label>
+                    <form:select id="selectZone" path="zone" class="form-control">
+                        <form:option value="" label=""/> 
+                        <c:forEach items="${localisationForm.zones}" var="mapEntry" >
+                                <form:option value="${mapEntry.key}" label="${mapEntry.value}"/> 
+                            </c:forEach>
+                    </form:select>
+                 
                 </fieldset>
             </div>
             <div class="modal-footer ">

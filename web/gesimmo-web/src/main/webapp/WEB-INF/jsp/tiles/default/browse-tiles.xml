@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE tiles-definitions PUBLIC
+       "-//Apache Software Foundation//DTD Tiles Configuration 2.0//EN"
+       "http://tiles.apache.org/dtds/tiles-config_2_0.dtd">
+<tiles-definitions>
+
+      <definition name="browse/site" extends="browse">
+        <put-attribute name="nav" value="/WEB-INF/jsp/v1/layouts/siteNav.jsp" />
+      </definition>
+
+     <definition name="browse/batiment" extends="browse">
+        <put-attribute name="nav" value="/WEB-INF/jsp/v1/layouts/batimentNav.jsp" />
+    </definition>
+
+
+
+</tiles-definitions>

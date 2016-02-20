@@ -5,7 +5,7 @@
 
 <sec:authorize access="isAuthenticated()">
     
-    <div style="margin: 25px;">
+    <div style="">
         <div class="modal fade " id="localisationMapModalForm" tabindex="-1" role="dialog"
              aria-labelledby="localisationMapModalForm" aria-hidden="true">
             <div class="modal-dialog modal-large2">

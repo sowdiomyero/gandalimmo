@@ -16,7 +16,6 @@ import sn.gandal.gesimmo.dto.BasicResponse;
 import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import static sn.gandal.gesimmo.controller.ProgrammeController.logger;
@@ -474,7 +473,7 @@ public class LocalisationController {
                 localisation.setAttribution(responsable);
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
-                localisation.setNbNiveaux(Integer.parseInt(localisationForm.getNbNiveaux()));
+              //  localisation.setNbNiveaux(Integer.parseInt(localisationForm.getNbNiveaux()));
                 Localisation localisationCreated = localisationMetier.saveLocalisation(localisation);
 
                 localisationForm = new EditLocalisationForm();
@@ -513,7 +512,7 @@ public class LocalisationController {
                 localisation.setParentLocalisation(locFind);
                 localisation.setCreateur(createur);
                 localisation.setAttribution(responsable);
-                localisation.setNbObjets(Integer.parseInt(localisationForm.getNbObjets()));
+                //localisation.setNbObjets(Integer.parseInt(localisationForm.getNbObjets()));
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
                 Localisation localisationCreated = localisationMetier.saveLocalisation(localisation);

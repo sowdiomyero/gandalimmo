@@ -23,13 +23,14 @@ import sn.gandal.gesimmo.modele.client.entities.Zone;
  * @author dysow
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EditLocalisationForm extends BasicResponse {
+public class BatimentForm extends BasicResponse {
 
-    private String dateCreation;
-    private String dateUpdated;
+ 
     private Long idLocalisation;
     @JsonProperty
     private String localisation;
+    @NotNull
+    @NotEmpty
     private String cleLocalite;
     @NotNull
     @NotEmpty
@@ -37,12 +38,9 @@ public class EditLocalisationForm extends BasicResponse {
     @NotNull
     @NotEmpty
     private String description;
+    
     private String longitude;
-    private String latitude;
-    private String longitudeMin;
-    private String longitudeMax;
-    private String latitudeMin;
-    private String latitudeMax;    
+    private String latitude;  
 
     @NotNull
     @NotEmpty
@@ -51,71 +49,33 @@ public class EditLocalisationForm extends BasicResponse {
     private String nomLocaliteGoogle;
 
     private List<Localisation> rattachements = new ArrayList<Localisation>();
+    private List<String> typesBatiment = new ArrayList<String>();
+    private List<String> etatsBatiment = new ArrayList<String>();
+    private String etatBatiment = "";
+    private String typeBatiment = "";
     private String rattachement;
     
 // Pour les formulaires de modification
-    
-    private List<String> dType = new ArrayList<String>();
-
-    private List<String> typeIncidentOuLocalite = new ArrayList<String>();
-    private List<String> gravites = new ArrayList<String>();
     
     private Map<Long,String> responsables = new HashMap<Long,String>();
     private List<User> listResponsables = new ArrayList<User>();
     private String responsable;
     
     private User responsableAttribution;
-//    private List<String> typeIncidentOuLocalite = new ArrayList<String>();
-    private String dT;
+    
+    private String dT="BATIMENT";
 
-    private String gravite;
     
     private String nbNiveaux;
-    private String nbObjets;
-    
-    private String nbNiveauxEffectifs;
-    private String nbObjetsEffectifs;
       
     private String oldRattachement;
     private String oldResponsable; 
     private String oldZone;
     
-    private String zone;    
+    private String zone; 
+    
     private Map<Long,String> zones = new HashMap<Long,String>();
 
-
-    public String getLatitudeMin() {
-        return latitudeMin;
-    }
-
-    public void setLatitudeMin(String latitudeMin) {
-        this.latitudeMin = latitudeMin;
-    }
-
-    public String getLatitudeMax() {
-        return latitudeMax;
-    }
-
-    public void setLatitudeMax(String latitudeMax) {
-        this.latitudeMax = latitudeMax;
-    }
-
-    
-    public String getLongitudeMin() {
-        return longitudeMin;
-    }
-
-    public void setLongitudeMin(String longitudeMin) {
-        this.longitudeMin = longitudeMin;
-    }
-
-    public String getLongitudeMax() {
-        return longitudeMax;
-    }
-
-    public void setLongitudeMax(String longitudeMax) {
-        this.longitudeMax = longitudeMax;
-    }
 
     public String getLocalisation() {
         return localisation;
@@ -125,25 +85,10 @@ public class EditLocalisationForm extends BasicResponse {
         this.localisation = localisation;
     }
 
-    public EditLocalisationForm() {
+    public BatimentForm() {
     }
 
-    public String getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(String dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    public String getDateUpdated() {
-        return dateUpdated;
-    }
-
-    public void setDateUpdated(String dateUpdated) {
-        this.dateUpdated = dateUpdated;
-    }
-
+    
     public Long getIdLocalisation() {
         return idLocalisation;
     }
@@ -224,14 +169,6 @@ public class EditLocalisationForm extends BasicResponse {
         this.rattachement = rattachement;
     }
 
-    public List<String> getdType() {
-        return dType;
-    }
-
-    public void setdType(List<String> dType) {
-        this.dType = dType;
-    }
-
     public String getdT() {
         return dT;
     }
@@ -239,23 +176,7 @@ public class EditLocalisationForm extends BasicResponse {
     public void setdT(String dT) {
         this.dT = dT;
     }
-
-    public List<String> getTypeIncidentOuLocalite() {
-        return typeIncidentOuLocalite;
-    }
-
-    public void setTypeIncidentOuLocalite(List<String> typeIncidentOuLocalite) {
-        this.typeIncidentOuLocalite = typeIncidentOuLocalite;
-    }
-
-    public String getGravite() {
-        return gravite;
-    }
-
-    public void setGravite(String gravite) {
-        this.gravite = gravite;
-    }
-
+   
     public String getNbNiveaux() {
         return nbNiveaux;
     }
@@ -264,29 +185,6 @@ public class EditLocalisationForm extends BasicResponse {
         this.nbNiveaux = nbNiveaux;
     }
 
-    public String getNbObjets() {
-        return nbObjets;
-    }
-
-    public void setNbObjets(String nbObjets) {
-        this.nbObjets = nbObjets;
-    }
-
-    public String getNbNiveauxEffectifs() {
-        return nbNiveauxEffectifs;
-    }
-
-    public void setNbNiveauxEffectifs(String nbNiveauxEffectifs) {
-        this.nbNiveauxEffectifs = nbNiveauxEffectifs;
-    }
-
-    public String getNbObjetsEffectifs() {
-        return nbObjetsEffectifs;
-    }
-
-    public void setNbObjetsEffectifs(String nbObjetsEffectifs) {
-        this.nbObjetsEffectifs = nbObjetsEffectifs;
-    }
 
     public Map<Long, String> getResponsables() {
         return responsables;
@@ -344,14 +242,7 @@ public class EditLocalisationForm extends BasicResponse {
         this.oldZone = oldZone;
     }
 
-    public List<String> getGravites() {
-        return gravites;
-    }
-
-    public void setGravites(List<String> gavites) {
-        this.gravites = gavites;
-    }
-
+    
     public String getCleLocalite() {
         return cleLocalite;
     }
@@ -371,16 +262,46 @@ public class EditLocalisationForm extends BasicResponse {
     public Map<Long, String> getZones() {
         return zones;
     }
-
-//    public void setZones(Map<Long, String> zones) {
-//        this.zones = zones;
-//    }
     
     public void setZones(List<Zone> zones) {
         for(Zone zn : zones){
             this.zones.put(zn.getIdZone(), zn.getNomZoneGoogle());
         }
     }
+
+    public List<String> getTypesBatiment() {
+        return typesBatiment;
+    }
+
+    public void setTypesBatiment(List<String> typeBatiment) {
+        this.typesBatiment = typeBatiment;
+    }
+    
+    public String getTypeBatiment() {
+        return typeBatiment;
+    }
+
+    public void setTypeBatiment(String typeBatiment) {
+        this.typeBatiment = typeBatiment;
+    }
+
+    public String getEtatBatiment() {
+        return etatBatiment;
+    }
+
+    public void setEtatBatiment(String etatBatiment) {
+        this.etatBatiment = etatBatiment;
+    }
+
+     public List<String> getEtatsBatiment() {
+        return etatsBatiment;
+    }
+
+    public void setEtatsBatiment(List<String> etatBatiment) {
+        this.etatsBatiment = etatBatiment;
+    }
+
+    
 
     
 

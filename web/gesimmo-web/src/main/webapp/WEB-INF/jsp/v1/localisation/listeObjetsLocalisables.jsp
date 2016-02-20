@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <br>
 
-<div class=" div-list">
+<div class="div-list">
     
     <c:forEach items="${localisations}" var="localisation" varStatus="indexes"> 
                 <div class="row div-item ${indexes.index == 0 ? 'selected-div' : ''}" style="border-bottom: 2px solid #EEE; margin: 3px;" data-id="${localisation.idLocalisation}" name="localisationItem" onclick="loadLocalisationItem(${localisation.idLocalisation});"> 

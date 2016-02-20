@@ -123,31 +123,31 @@ var routeController = {
             });
         },
         update: function(data, frm) {            
-           // var data = extractDataForm(frm);
-            $.ajax({
-                contentType: 'application/json; charset=utf-8',
-                type: frm.attr('method'),
-                url: frm.attr('action'),
-                dataType: 'json',
-                data: JSON.stringify(data),
-                success: notifySuccessAndReload,
-                error: function(response) {
-                    alert("Global Functions : Une erreur est survenue pendant le chargement des coordonnees geo ....");
-                }
-            });
+            postJsonForm(data, frm);
         },
         verifyKey: function(key, callback) {            
-           // var data = extractDataForm(frm);
-            $.ajax({
+           if(key !== null && key !== ""){
+               $.ajax({
                 contentType: 'application/json; charset=utf-8',
                 type: 'GET',
                 url: getContextPath() + '/localisation/verify/key/'+key,
                 dataType: 'json',
                 success: callback,
                 error: function(response) {
-                    alert("Global Functions : Une erreur est survenue pendant le chargement des coordonnees geo ....");
+                    alert("Une erreur est survenue pendant la verification de validité de la clef....");
                 }
-            });
+            }); 
+           }
+           
+        }
+    },
+    
+    niveau : {
+        addNew: function(data, frm) {            
+            postJsonForm(data, frm);
+        },
+        update: function(data, frm) {            
+            postJsonForm(data, frm);
         }
     }
 };
@@ -208,6 +208,21 @@ function extractKey(caractere, taille, delimiter){
             var res = chaine[0].substring(0,taille).toUpperCase();
             return res;
         }
+}
+
+function postJsonForm(data, frm){
+     
+    $.ajax({
+                contentType: 'application/json; charset=utf-8',
+                type: frm.attr('method'),
+                url: frm.attr('action'),
+                dataType: 'json',
+                data: JSON.stringify(data),
+                success: notifySuccessAndReload,
+                error: function(response) {
+                    alert("Une erreur est survenue pendant l'envoie des données au Serveur ....");
+                }
+            });
 }
 
 

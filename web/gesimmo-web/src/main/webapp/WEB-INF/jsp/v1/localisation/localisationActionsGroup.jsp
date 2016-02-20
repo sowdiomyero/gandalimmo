@@ -5,7 +5,20 @@
 <%@ taglib prefix="form" uri="http://www.springframework.org/tags/form" %>
 
 <sec:authorize access="isAuthenticated()">
-<div style="margin-left: 8px">
+    <div class ="row" style="margin-left: 0px; color:blue;padding-right: 15px; padding-top: 5px;padding-bottom: 5px; font-weight: bold; border-radius: 0px 0px 12px 12px; border-bottom: 3px solid #fefefe;background-color: rgb(255,155,55) ">
+        <div style="margin-left: 8px;">
+           <c:if test="${localisationForm.dT == 'SITE'}">        
+                <a style="color:white;" href="${pageContext.request.contextPath}/browse/site/${localisationForm.idLocalisation}">${localisationForm.cleLocalite} </a> 
+            </c:if>
+            <c:if test="${localisationForm.dT == 'BATIMENT'}">        
+                <a style="color:white;" href="${pageContext.request.contextPath}/browse/batiment/${localisationForm.idLocalisation}">${localisationForm.cleLocalite} </a> 
+            </c:if>
+        <br/> 
+     
+        </div>   
+     
+    </div>
+   <div style="margin-left: 8px; ">
     <div  style="padding: 4px; margin: 4px;display: inline-table " id="btnModifierObjetLocalisable">
         <button class="btn btn-default btn-xs" data-toggle="modal"  
                 data-target="#localisationModalForm"   data-id="${localisationForm.idLocalisation}">
@@ -27,20 +40,20 @@
     </div>
     <c:if test="${localisationForm.dT == 'BATIMENT'}">
      <div  style="padding: 4px; margin: 4px; display: inline-table">
-        <button class="btn btn-default btn-xs" data-toggle="modal"  
-                data-target="# " id="btnAjouterNiveau" >
-            <span class="glyphicon glyphicon-plus-sign"></span> Niveau
+        <button class="btn btn-default btn-xs" data-toggle="modal" data-id="${localisationForm.idLocalisation}"  
+                data-target="#addNiveauModal" id="btnAjouterNiveau" >
+            <span class="glyphicon glyphicon-plus-sign" data-target="#addNiveauModal"></span> Niveau
         </button>
     </div>
      </c:if>
             
-            <c:if test="${localisationForm.dT == 'SITE'}">
-     <div  style="padding: 4px; margin: 4px; display: inline-table">
-        <button class="btn btn-default btn-xs" data-toggle="modal"  
-                data-target="# " id="btnAjouterBayiment" >
-            <span class="glyphicon glyphicon-plus-sign"></span> Batiment
-        </button>
-    </div>
+     <c:if test="${localisationForm.dT == 'SITE'}">
+        <div  style="padding: 4px; margin: 4px; display: inline-table">
+           <button class="btn btn-default btn-xs" data-toggle="modal" data-id="${localisationForm.idLocalisation}" 
+                   data-target="#addLocalisationModal" id="btnAjouterBatiment" >
+               <span class="glyphicon glyphicon-plus-sign" data-toggle="modal" data-target="#addLocalisationModal"></span> Batiment
+           </button>
+        </div>
      </c:if>
     
     <div  style="padding: 4px; margin: 4px;display: inline-table">
@@ -66,7 +79,9 @@
 <!-- MODAL POUR MODIFICATION DE LA FICHE -->
 
 <%@include file="./modalEditLocalisation.jsp" %>
+<%@include file="./modalAddBatiment.jsp" %>
 <%@include file="./modalViewLocalisationMap.jsp" %>
+<%@include file="../niveau/modalAddNiveau.jsp" %>
 
     </sec:authorize>
                

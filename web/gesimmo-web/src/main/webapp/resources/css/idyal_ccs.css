@@ -147,6 +147,7 @@ span.round-tab:hover {
 body {
 /*    padding-top:50px;*/
     font-size: 75%;
+    overflow-x:hidden;
 
 }
 #loading-indicator {

@@ -25,6 +25,7 @@
                                             <link href="${pageContext.request.contextPath}/css/sb-admin.css" type="text/css" rel="stylesheet">
                                                 <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet">
                                                     <link href="${pageContext.request.contextPath}/css/selectize.css" type="text/css" rel="stylesheet">
+                                                        <link href="${pageContext.request.contextPath}/css/segment.css" type="text/css" rel="stylesheet">
                                                         <script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/jquery-dataTable.min.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
@@ -34,8 +35,10 @@
                                                         <script src="${pageContext.request.contextPath}/js/esecure.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/gesimmo.js"></script>                                             
                                                         <script src="${pageContext.request.contextPath}/js/selectize.js"></script>
-                                                        <script src="${pageContext.request.contextPath}/js/dataTables.responsive.js"></script><script type='text/javascript'>
-
+                                                        <script src="${pageContext.request.contextPath}/js/dataTables.responsive.js"></script>
+                                                            
+                                                            
+                                                            <script type="text/javascript">
                                                             //                                                $(document).ready(function() {
                                                             //
                                                             //                                                    $('#sidebar').affix({
@@ -249,7 +252,12 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-
+                                                                <script type="text/javascript" src="${pageContext.request.contextPath}/js/segment.js"></script>
+                                                                    <script type="text/javascript">
+                                                                        jQuery(function ($){
+                                                                             $(".segment-select").Segment();
+                                                                        });
+                                                                    </script>
 
                                                         </body>
                                                         </html>

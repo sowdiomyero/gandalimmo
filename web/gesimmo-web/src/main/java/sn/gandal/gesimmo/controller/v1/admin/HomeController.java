@@ -54,6 +54,25 @@ public class HomeController {
         model.addAttribute("localisationFormFilter", localisationFormFilter);
         return "index";
     }
+    
+     @RequestMapping(value = "/home/accueil")
+    public String accueilPage(Model model) {
+
+        EditLocalisationForm localisationForm = new EditLocalisationForm();
+        List<Localisation> locs = new ArrayList<Localisation>();
+        locs.addAll(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
+        locs.add(0, new BatimentLocalite());
+        
+        localisationForm.setRattachements(locs);
+        model.addAttribute("localisationForm", localisationForm);
+        
+        LocalisationFormFilter localisationFormFilter = new LocalisationFormFilter();
+        localisationFormFilter.setTypeIncidentOuLocalite(SiteLocalite.getAllTypes());
+        localisationFormFilter.setdT(gesimmoMetier.getTypeLicenceLocalite().get(0));
+        localisationFormFilter.setdType(gesimmoMetier.getTypeLicenceLocalite());
+        model.addAttribute("localisationFormFilter", localisationFormFilter);
+        return "accueil";
+    }
 
     @RequestMapping(value = "/")
     public String homePage(Model model) {

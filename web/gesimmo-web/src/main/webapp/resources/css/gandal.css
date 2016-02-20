@@ -87,6 +87,7 @@ div.selected-div span {
 
 .div-list{
     min-height: 475px;
+    height: 475px;
 }
 
 .div-item:hover{
@@ -102,8 +103,40 @@ div.selected-div span {
     width: 75%;
 }
 
-/*.gm-style-iw {
-  width: 300px; 
-  min-height: 150px;
-  overflow-y: hidden;
-}*/
+.localisationFilterTab{
+    padding-left: 30px;
+    background: #EEE;
+    border-top: 2px solid rgb(255,155,55);
+    border-bottom: 2px solid rgb(255,155,55);
+    padding-bottom: 10px;
+}
+.localisationFilterTab select {
+    margin-right: 8px;
+    border-radius: 8px 8px;
+    
+}
+
+input[type='submit'] {
+        border-radius: 8px 8px;
+/*        background-color: #c8c8c8;*/
+        color: white;
+        background-color: rgb(255,155,55);
+        font-weight: bold;
+        border: 1px solid white;
+        outline: inherit;
+        -moz-outline-style: dashed; 
+    }
+    input[type='submit']:hover {
+        border-radius: 8px 8px;
+        background-color: rgb(26,04,82);
+        color: white;
+        font-weight: bold;
+        border: 1px solid blueviolet;
+    }
+    
+    #localisationFilterForm select {
+      margin-top: 5px;
+      font-size:18px;
+      width:auto;
+      color:#707070  
+    }

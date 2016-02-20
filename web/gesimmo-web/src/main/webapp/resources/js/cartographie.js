@@ -246,17 +246,22 @@ $(document).ready(function() {
        
     });
     $(document).on('focusout', '#nomLocaliteCorrige', function() {
-        var clefObjet = $("#cleLocalite").val();  
+        var clefObjet = $("#cleLocalite").val();
+        if($("#nomLocaliteCorrige").val() != ""){
         routeController.localisation.verifyKey(clefObjet, function(response){
            if(response.resultat === 200){
                $("#cleLocalite").css({border :'1px solid green'});
            } else{
                $("#clefMessage").text("Cette clef n'est pas disponible.... veuillez en choisir une autre");
-               $("#clefMessage").css({color:'red', display:'block'});
-               
-                $("#cleLocalite").css({border :'1px solid red'});
+               $("#clefMessage").css({color:'red', display:'block'});               
+               $("#cleLocalite").css({border :'1px solid red'});
            }
         });
+    
+        }else{
+           $("#nomLocaliteCorrige").css("border-color","red"); 
+           $("#cleLocalite").css("border-color","red");
+        }
     });
     $(document).on('focusin', '#nomLocaliteCorrige', function() {       
                      
