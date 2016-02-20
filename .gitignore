@@ -80,3 +80,8 @@ excellon.txt
 *.wrl
 *.ADPT
 *.AZO
+/web/gesimmo-web/target/
+/persistence/gesimmo-modele/target/
+/dao/gesimmo-dao/target/
+/service/mail-sender/target/
+/service/gesimmo-metier/target/

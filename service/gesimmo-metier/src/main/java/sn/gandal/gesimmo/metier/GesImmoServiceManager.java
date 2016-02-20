@@ -14,9 +14,11 @@ import sn.gandal.gesimmo.metier.services.IActiviteMetier;
 import sn.gandal.gesimmo.metier.services.IGesimmoMetier;
 import sn.gandal.gesimmo.metier.services.IIndicateurMetier;
 import sn.gandal.gesimmo.metier.services.ILocalisationMetier;
+import sn.gandal.gesimmo.metier.services.INiveauMetier;
 import sn.gandal.gesimmo.metier.services.IProgrammeMetier;
 import sn.gandal.gesimmo.metier.services.IProjetMetier;
 import sn.gandal.gesimmo.metier.services.IUserActiviteMetier;
+import sn.gandal.gesimmo.metier.services.IZoneMetier;
 
 /**
  *
@@ -48,7 +50,14 @@ public class GesImmoServiceManager {
     
     @Autowired
     private  IActiviteMetier activiteService;
-
+    
+    @Autowired
+    private  IZoneMetier zoneService;
+    
+    @Autowired
+    private  INiveauMetier niveauService;
+    
+    
     public GesImmoServiceManager() {
     }
     
@@ -91,6 +100,14 @@ public class GesImmoServiceManager {
 
     public IActiviteMetier getActiviteService() {
         return activiteService;
+    }
+
+    public IZoneMetier getZoneService() {
+        return zoneService;
+    }
+
+    public INiveauMetier getNiveauService() {
+        return niveauService;
     }
     
    

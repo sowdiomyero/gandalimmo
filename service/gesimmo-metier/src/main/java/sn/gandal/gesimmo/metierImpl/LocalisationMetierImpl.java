@@ -6,6 +6,7 @@
 package sn.gandal.gesimmo.metierImpl;
 
 import java.util.List;
+import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import sn.gandal.gesimmo.metier.services.ILocalisationMetier;
@@ -37,6 +38,12 @@ public class LocalisationMetierImpl implements ILocalisationMetier {
     }
 
     @Override
+    public List<Localisation> findLocalisationChild(Long idLocalisationParent) {
+      return localisation.findLocalisationChild(idLocalisationParent);
+    }
+
+    
+    @Override
     public void updateLocalisation(Localisation loc) {
         localisation.updateLocalisation(loc);
     }
@@ -54,6 +61,11 @@ public class LocalisationMetierImpl implements ILocalisationMetier {
     @Override
     public List<Localisation> findAllLocalisationByTypeAndEtat(String type, Localisation.ETAT etat) {
         return localisation.findAllLocalisationByTypeAndEtat(type, etat);
+    }
+
+    @Override
+    public List<Localisation> findAllLocalisationByDType(String type) {
+        return localisation.findAllLocalisationByDType(type);
     }
     
     
@@ -195,6 +207,12 @@ public class LocalisationMetierImpl implements ILocalisationMetier {
     @Override
     public boolean isKeyExist(String key) {
        return localisation.isKeyExist(key);
+    }
+
+    @Override
+    public List<Localisation> findAllLocalisations() {       
+        return localisation.findAllLocalisations();
+      
     }
     
     

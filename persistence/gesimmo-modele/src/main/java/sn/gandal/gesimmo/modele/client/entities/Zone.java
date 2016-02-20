@@ -49,6 +49,9 @@ public class Zone extends AbstractDateEntity implements Serializable {
     @Version
     @Column(name = "version", columnDefinition = "INT(11) default '0'")
     private int version;
+    
+    @OneToMany( cascade = CascadeType.ALL, mappedBy = "zone")
+    private List<Localisation> localisations;
 
 
     public Zone() {
@@ -110,6 +113,14 @@ public class Zone extends AbstractDateEntity implements Serializable {
 
     public void setCouleur(String couleur) {
         this.couleur = couleur;
+    }
+
+    public List<Localisation> getLocalisations() {
+        return localisations;
+    }
+
+    public void setLocalisations(List<Localisation> localisations) {
+        this.localisations = localisations;
     }
     
     

@@ -39,8 +39,8 @@ public class ZoneDaoImpl implements IZoneDao {
     }
 
     @Override
-    public Zone findOne(Long aLong) {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public Zone findOne(Long idZone) {            
+       return em.find(Zone.class, idZone);
     }
 
     @Override

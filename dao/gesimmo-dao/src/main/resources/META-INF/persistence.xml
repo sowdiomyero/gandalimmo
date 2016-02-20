@@ -26,6 +26,7 @@
     <class>sn.gandal.gesimmo.modele.client.entities.BatimentLocalite</class>
     <class>sn.gandal.gesimmo.modele.client.entities.Demande</class>
     <class>sn.gandal.gesimmo.modele.client.entities.Prestataire</class>
+    <class>sn.gandal.gesimmo.modele.client.entities.Niveau</class>
     <properties>
       <property name="hibernate.dialect" value="org.hibernate.dialect.MySQL5InnoDBDialect"/>
       <property name="hibernate.hbm2ddl.auto" value="update"/>

@@ -31,6 +31,8 @@ public interface IGesimmoMetier {
     public Compte getAccountWithLoginExist(String login);
 
     public Compte findAccountByLogin(String login);
+    
+    public User findUserByLogin(String login);
 
     public boolean isUserWithEmailExist(String email);
 

@@ -22,12 +22,17 @@ public interface ILocalisationDao extends CrudRepository<Localisation, Long> {
     public Localisation getLocalisationByName(String nomLocalisation);
 
     public Localisation getLocalisationById(Long idLocalisation);
+    
+    public List<Localisation> findLocalisationChild(Long idLocalisationParent);
 
     public void updateLocalisation(Localisation localisation);
 
     public List<BatimentLocalite> findAllTLocaliteByTypeAndEtat(BatimentLocalite.TYPE type, Localisation.ETAT etat);
     
     public List<Localisation> findAllLocalisationByTypeAndEtat(String type, Localisation.ETAT etat);
+    
+    
+    public List<Localisation> findAllLocalisationByDType(String type);
 
     public List<BatimentLocalite> findAllTLocaliteByEtat(Localisation.ETAT etat);
     
@@ -46,5 +51,7 @@ public interface ILocalisationDao extends CrudRepository<Localisation, Long> {
     public List<ObjetIncident> findIncidentByCriteres(LocalisationFormFilter localisationFormFilter); 
 
     public boolean isKeyExist(String key);
+    
+     public List<Localisation> findAllLocalisations();
 
 }

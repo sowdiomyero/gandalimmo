@@ -83,6 +83,10 @@ public class LocalisationDaoImpl implements ILocalisationDao {
         return (Localisation) em.createNamedQuery(Localisation.FIND_LOCALISABLE_BY_ID).setParameter("idLocalisation", idLocalisation).getSingleResult();
     }
 
+    public List<Localisation> findLocalisationChild(Long idLocalisationParent) {
+        return  em.createNamedQuery(Localisation.FIND_ALL_LOCALITE_CHILD).setParameter("parent", idLocalisationParent).getResultList();
+    }
+
     public void updateLocalisation(Localisation localisation) {
         Localisation localisation1 = em.merge(localisation);
     }
@@ -96,9 +100,9 @@ public class LocalisationDaoImpl implements ILocalisationDao {
         return (List<Localisation>) em.createNamedQuery(Localisation.FIND_ALL_LOCALITE_BY_ETAT_AND_TYPE).setParameter("etat", etat).setParameter("type", type).getResultList();
     }
 
-//     public List<Localisation> findAllLocalisationByTypeAndEtat(String type, int etat) {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-//    }
+     public List<Localisation> findAllLocalisationByDType(String type) {
+         return (List<Localisation>) em.createNamedQuery(Localisation.FIND_ALL_LOCALITE_BY_DTYPE).setParameter("type", type).getResultList();
+    }
     public List<BatimentLocalite> findAllTLocaliteByEtat(Localisation.ETAT etat) {
 
         return (List<BatimentLocalite>) em.createNamedQuery(BatimentLocalite.FIND_ALL_BATIMENT_BY_ETAT).setParameter("etat", etat).getResultList();
@@ -194,6 +198,10 @@ public class LocalisationDaoImpl implements ILocalisationDao {
            return true;
        }
        return false;
+    }
+    
+  public List<Localisation> findAllLocalisations() {
+     return (List<Localisation>) em.createNamedQuery(Localisation.FIND_ALL_LOCALISABLES).getResultList();   
     }
 
    

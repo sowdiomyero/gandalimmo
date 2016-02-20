@@ -23,6 +23,8 @@ public interface ILocalisationMetier {
     public User getResponsableLocalisation(Long idLocalisation);
 
     public Localisation getLocalisationById(Long idLocalisation);
+    
+    public List<Localisation> findLocalisationChild(Long idLocalisationParent);
 
     public void updateLocalisation(Localisation localisation);
 
@@ -31,6 +33,8 @@ public interface ILocalisationMetier {
     public List<BatimentLocalite> findAllTLocaliteByTypeAndEtat(BatimentLocalite.TYPE type, Localisation.ETAT etat);
     
     public List<Localisation> findAllLocalisationByTypeAndEtat(String type, Localisation.ETAT etat);
+    
+    public List<Localisation> findAllLocalisationByDType(String type);
 
     public List<BatimentLocalite> findAllTLocaliteByEtat(Localisation.ETAT etat);
     
@@ -60,6 +64,7 @@ public interface ILocalisationMetier {
     public List<ObjetIncident> findIncidentByCriteres(LocalisationFormFilter localisationFormFilter);
 
     public  boolean isKeyExist(String key);
-
+    
+    public List<Localisation> findAllLocalisations();
 
 }

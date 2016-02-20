@@ -43,8 +43,8 @@ public class SiteLocalite extends Localisation {
         PUBLIC,PRIVE,RESIDENCIEL,AUTRE
     }
 
-    @Column(name = "nb_objets")
-    private Integer nbObjets;
+//    @Column(name = "nb_objets")
+//    private Integer nbObjets;
 
     public SiteLocalite() {
         super();
@@ -88,12 +88,19 @@ public class SiteLocalite extends Localisation {
         return response;
     }
 
-    public Integer getNbObjets() {
-        return nbObjets;
-    }
-
-    public void setNbObjets(Integer nbObjets) {
-        this.nbObjets = nbObjets;
+//    public Integer getNbObjets() {
+//        return nbObjets;
+//    }
+//
+//    public void setNbObjets(Integer nbObjets) {
+//        this.nbObjets = nbObjets;
+//    }
+    
+     public int getNbObjetsSaisis(){
+       if(getLocalisationChilds() != null && getLocalisationChilds().size()>0 ){
+           return getLocalisationChilds().size();
+       } 
+       return 0;
     }
 
 }

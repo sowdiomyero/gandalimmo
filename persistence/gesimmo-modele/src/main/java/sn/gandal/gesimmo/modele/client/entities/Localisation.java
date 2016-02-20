@@ -9,6 +9,8 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  *
@@ -20,11 +22,13 @@ import java.util.List;
 @Table(name = "localisation")
 @NamedQueries({
     @NamedQuery(name = Localisation.FIND_LOCALISABLE_BY_ID, query = "SELECT l FROM Localisation l where l.id = :idLocalisation"),
+    @NamedQuery(name = Localisation.FIND_ALL_LOCALITE_CHILD, query = "SELECT l FROM Localisation l where l.parentLocalisation = :parent"),
     @NamedQuery(name = Localisation.FIND_ALL_LOCALISABLES, query = "SELECT l FROM Localisation l"),
     @NamedQuery(name = Localisation.FIND_LOCALISABLES_BY_TYPE, query = "SELECT l FROM Localisation l where l.type = :type"),
     @NamedQuery(name = Localisation.FIND_LOCALISABLES_BY_ETAT, query = "SELECT l FROM Localisation l where l.etat = :etat"),
     @NamedQuery(name = Localisation.FIND_LOCALISABLES_BY_CLEF, query = "SELECT l FROM Localisation l where l.clef = :clef"),
     @NamedQuery(name = Localisation.FIND_ALL_LOCALITE_BY_ETAT_AND_TYPE, query = "SELECT l FROM Localisation l where l.etat = :etat and l.typeLocalisation = :type"),
+    @NamedQuery(name = Localisation.FIND_ALL_LOCALITE_BY_DTYPE, query = "SELECT l FROM Localisation l where  l.typeLocalisation = :type"),
     @NamedQuery(name = Localisation.FIND_RESPONSABLE_FROM_LOCALISATION, query = "SELECT l.attribution FROM Localisation l where l.idLocalisation = :idLocalisation")
 
 })
@@ -35,20 +39,24 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
     // Noms requ�tes nomm�e
     public static final String FIND_LOCALISABLE_BY_ID = "findLocalisableById";
     public static final String FIND_ALL_LOCALISABLES = "findAllTLocalisables";
+     public static final String FIND_ALL_LOCALITE_CHILD = "findAllTLocaliteChild";
     public static final String FIND_LOCALISABLES_BY_TYPE = "findLocalisablesByType";
     //public static final String FIND_ALL_LOCALITE_BY_TYPE_AND_ETAT = "findLocalisablesParTypeEtEtat";
     public static final String FIND_ALL_LOCALITE_BY_ETAT_AND_TYPE = "findLocalisablesParTypeEtEtat";
+    public static final String FIND_ALL_LOCALITE_BY_DTYPE = "findLocalisablesParDType";
     public static final String FIND_LOCALISABLES_BY_ETAT = "findLocalisablesByEtat";
     public static final String FIND_LOCALISABLES_BY_CLEF = "findLocalisablesByKey";
     public static final String FIND_RESPONSABLE_FROM_LOCALISATION = "getResponsableLocalisation";
 
-  public enum ETAT{
+  public enum ETAT {
        FONCTIONNEL,
        EN_RENOVATION,
        EN_CONSTRUCTION,
        VENDU,
        ABANDONNE,
        SUPPRIME
+       
+       
    }
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -85,6 +93,10 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
     @ManyToOne//(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_parent")
     private Localisation parentLocalisation;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "parentLocalisation")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Localisation> localisationChilds = new ArrayList<Localisation>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "localisation")
     private List<LocalisationIndicateur> localisationIndicateurs = new ArrayList<LocalisationIndicateur>();
@@ -99,6 +111,12 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
     
     @Column(name = "clef", length = 50)
     protected String clef;
+    
+    @ManyToOne
+    @JoinColumn(name = "id_zone")
+    public Zone zone; 
+    
+
     
     // Constructeurs
     public Localisation(String nom) {
@@ -121,6 +139,15 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
         this.parentLocalisation = parentLocalisation;
     }
 
+    public List<Localisation> getLocalisationChilds() {
+        return localisationChilds;
+    }
+
+    public void setLocalisationChilds(List<Localisation> localisationChilds) {
+        this.localisationChilds = localisationChilds;
+    }
+
+    
 // FIN d�finition des Constructeurs
 // Getters and Setters    
     public Long getIdLocalisation() {
@@ -244,14 +271,46 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
     }
 
     public String getClef() {
+
         return clef;
+    }
+    
+     public String getKeyPath() {
+         String nameSlashCode =  getNomLocalisable()+" / "+this.clef+"-"+getIdLocalisation();
+         
+         // Si c'est un site ou un element sans parent, alors retourner le chemin simple
+         if(getDType().equalsIgnoreCase(TableConfig.DTYPE_SITE) || getParentLocalisation() == null){
+             return nameSlashCode;
+         }
+        // si le parent est un site ou incident ==> ajouter la parenté
+        if(getParentLocalisation().getDType().equalsIgnoreCase(TableConfig.DTYPE_SITE) || getParentLocalisation().getDType().equalsIgnoreCase(TableConfig.DTYPE_INCIDENT)){
+            return  getParentLocalisation().getNomLocalisable()+" / "+getNomLocalisable()+" / "+
+                    getParentLocalisation().getClef()+"-"+getParentLocalisation().getIdLocalisation()+"-"+getIdLocalisation();
+            
+        }
+
+        return nameSlashCode;
     }
 
     public void setClef(String clef) {
         this.clef = clef;
     }
+
+    public Zone getZone() {
+        return zone;
+    }
+
+    public void setZone(Zone zone) {
+        this.zone = zone;
+    }
     
-    
+    public static List<String> getAllEtats(){
+           List<String> resultat = new ArrayList<String>();
+           for(ETAT e : ETAT.values()){
+               resultat.add(e.name());
+           }
+           return resultat;
+       }
 
 // Fin d�claration Getters and Setters
     @Override
@@ -275,6 +334,8 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
         }
 
     }
+    
+    
 
     @Override
     public String toString() {

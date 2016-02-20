@@ -7,12 +7,20 @@ package sn.gandal.gesimmo.modele.client.entities;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+import sn.gandal.gesimmo.modele.client.entities.Niveau.ETAGE;
 
 /**
  *
@@ -34,8 +42,12 @@ public class BatimentLocalite extends Localisation {
     public static final String FIND_ALL_BATIMENTS = "findAllBatiments";
     // Fin declaration des noms des requetes nommees
     
-    @Column(name = "nb_niveaux", length = 2)
-    private Integer nbNiveaux;
+//    @Column(name = "nb_niveaux", length = 2)
+//    private Integer nbNiveaux;
+    
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "batiment")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private List<Niveau> niveaux = new ArrayList<Niveau>();
 
     public BatimentLocalite(String tout) {
         super.setNomLocalisable(tout);
@@ -45,14 +57,14 @@ public class BatimentLocalite extends Localisation {
         LOCATION, LOCATION_VENTE, BUREAU
     }
 
-    public Integer getNbNiveaux() {
-        return nbNiveaux;
-    }
-
-    public void setNbNiveaux(Integer nbNiveaux) {
-        this.nbNiveaux = nbNiveaux;
-    }
-   
+//    public Integer getNbNiveaux() {
+//        return nbNiveaux;
+//    }
+//
+//    public void setNbNiveaux(Integer nbNiveaux) {
+//        this.nbNiveaux = nbNiveaux;
+//    }
+//   
 
     public BatimentLocalite() {
         super();
@@ -92,6 +104,43 @@ public class BatimentLocalite extends Localisation {
             response.add(value.name());
         }
         return response;
+    }
+
+    public List<Niveau> getNiveaux() {
+        return niveaux;
+    }
+
+    public void setNiveaux(List<Niveau> niveaux) {
+        this.niveaux = niveaux;
+    }
+    
+    public Map<String, String> getNiveauxSaisis(){
+       Map<String, String> result = new HashMap<String, String>();
+       if(getNiveaux() != null && getNiveaux().size()>0 ){
+           for(Niveau nv : getNiveaux()){
+               if(nv.getEtage() != null)
+                    result.put(nv.getEtage().getKey(), nv.getEtage().getLabel());
+           }
+       }
+       return result;
+    }
+    
+    public Map<String, String> exclureNiveauxSaisis(){
+      Map<String, String> result = new LinkedHashMap<String, String>();
+      Map<String, String> niveauxSaisis = getNiveauxSaisis();
+       for(ETAGE etage : Niveau.ETAGE.values()){
+           if(! niveauxSaisis.containsKey(etage.getKey()))
+                result.put(etage.getKey(), etage.getLabel());
+       }
+       
+       return result;
+    }
+    
+   public int getNbNiveauxSaisis(){
+       if(getNiveaux() != null && getNiveaux().size()>0 ){
+           return getNiveaux().size();
+       } 
+       return 0;
     }
 
 }

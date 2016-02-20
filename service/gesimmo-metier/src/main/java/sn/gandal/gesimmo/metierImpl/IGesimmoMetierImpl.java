@@ -43,6 +43,8 @@ public class IGesimmoMetierImpl implements IGesimmoMetier {
     @Autowired
     IRoleDao role;
     @Autowired
+    IZoneDao zone;
+    @Autowired
     ICompteDao compte;
     @Autowired
     IJobExecutorDao job;
@@ -75,13 +77,19 @@ public class IGesimmoMetierImpl implements IGesimmoMetier {
 
     @Override
     public Object findEntityById(Long id, Class entityClass) {
-
+        
+        if(id == null)
+            return null;
+        
         if (entityClass == User.class) {
             return user.findOne(id);
         }
 
         if (entityClass == Role.class) {
             return role.findOne(id);
+        }
+        if (entityClass == Zone.class) {
+            return zone.findOne(id);
         }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
@@ -231,6 +239,14 @@ public class IGesimmoMetierImpl implements IGesimmoMetier {
     @Override
     public Compte findAccountByLogin(String login) {
         return compte.findAccountByLogin(login);
+    }
+    
+    @Override
+    public User findUserByLogin(String login){
+        Compte cp = findAccountByLogin(login);
+        if(cp != null)
+            return cp.getUser();
+        return null;
     }
 
     @Override
