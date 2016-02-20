@@ -16,6 +16,7 @@
     </definition>
     
      <definition name="browse" template="/WEB-INF/jsp/v1/layouts/jiraLayout.jsp">
+
         <put-attribute name="footer" value="/WEB-INF/jsp/v1/layouts/footer.jsp" />
         <put-attribute name="header" value="/WEB-INF/jsp/v1/layouts/header.jsp" />
 <!--        <put-attribute name="banniere" value="/WEB-INF/jsp/v1/layouts/banniere.jsp" />-->

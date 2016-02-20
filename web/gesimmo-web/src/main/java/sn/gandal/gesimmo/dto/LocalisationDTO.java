@@ -8,7 +8,9 @@ package sn.gandal.gesimmo.dto;
 
 import java.text.DateFormat;
 import java.util.ArrayList;
+
 import java.util.List;
+
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.ObjetIncident;
 import sn.gandal.gesimmo.modele.client.entities.SiteLocalite;
@@ -60,9 +62,11 @@ public class LocalisationDTO {
         if(loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_INCIDENT)){
             this.gravite = ((ObjetIncident)loc).getGravite();
         }else if (loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_SITE)){
+
           //  this.nbObjets = String.valueOf(((SiteLocalite)loc).getNbObjets());
         }else if (loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
            // this.nbNiveaux = String.valueOf(((BatimentLocalite)loc).getNbNiveaux());
+
                 }
         this.type = loc.getType();
         this.dT=loc.getDType();

@@ -46,13 +46,12 @@ public class LocalisationBrowser {
     
     @RequestMapping(value = "/batiment/{key}", method = RequestMethod.GET)
     public String browseBatiment(@PathVariable(value = "key")Long clef, Model model) {
-    if(clef != null){
-        
-        Localisation loc = manager.getLocalisationService().getLocalisationById(clef);
-        
+    if(clef != null){       
+        Localisation loc = manager.getLocalisationService().getLocalisationById(clef);    
     }else{
         
     }
+
     return "browse/batiment";
     }
 }
