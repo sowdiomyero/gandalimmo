@@ -77,6 +77,7 @@
                 nav.sidebar ul.level1 li:hover {
 /*                   background: rgb(255,155,55);*/
 
+
                    color: white;
                 }
                 nav.sidebar ul.level1 li {
@@ -249,6 +250,7 @@
              <div class="row">
                   <div class="col-md-1">    
              <!-- NAVIGATION DE GAUCHE -->
+
 <!--             <nav class='sidebar sidebar-menu-collapsed bgcode' style="z-index: 2000"> 
 
             <a href='#' id='justify-icon'>
@@ -262,8 +264,8 @@
                         <span class='expanded-element'>Batiment</span>
                     </a>
 
-
                     <ul class='level2'>
+
 
                         <li> <a href='#' title='Traffic'>Traffic</a>
 
@@ -275,7 +277,9 @@
 
                         </li>
 
+
                     </ul>
+
 
                 </li>
                 <li> <a class='expandable' href='#' title='Parkings'>
@@ -332,10 +336,12 @@
                 <span class='glyphicon glyphicon-off'></span>
             </a>
 
+
         </nav>-->
                
                      <tiles:insertAttribute name="nav"/>
               
+
              </div>
                  <div class="col-md-11">
                      <p style="padding-top: 50px; height: 100%;">Contenu de la page</p>                     

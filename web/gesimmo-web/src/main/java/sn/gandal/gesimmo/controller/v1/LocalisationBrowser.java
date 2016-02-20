@@ -30,6 +30,7 @@ public class LocalisationBrowser {
     GesImmoServiceManager manager;
     
     @RequestMapping(value = "/site/{key}", method = RequestMethod.GET)
+
     public String browseSite(@PathVariable(value = "key")Long clef, Model model) {
     
         //1- recuperer le site avec l'id fournir
@@ -53,5 +54,6 @@ public class LocalisationBrowser {
     }
 
     return "browse/batiment";
+
     }
 }
