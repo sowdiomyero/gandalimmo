@@ -26,6 +26,7 @@
                                                 <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet">
                                                     <link href="${pageContext.request.contextPath}/css/selectize.css" type="text/css" rel="stylesheet">
                                                         <link href="${pageContext.request.contextPath}/css/segment.css" type="text/css" rel="stylesheet">
+                                                        <link href="${pageContext.request.contextPath}/css/bootstrap-toggle.min.css" type="text/css" rel="stylesheet">
                                                         <script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/jquery-dataTable.min.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
@@ -36,28 +37,10 @@
                                                         <script src="${pageContext.request.contextPath}/js/gesimmo.js"></script>                                             
                                                         <script src="${pageContext.request.contextPath}/js/selectize.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/dataTables.responsive.js"></script>
+                                                        <script type="text/javascript" src="${pageContext.request.contextPath}/js/segment.js"></script>
+                                                        <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap-toggle.min.js"></script>
                                                             
-                                                            
-                                                            <script type="text/javascript">
-                                                            //                                                $(document).ready(function() {
-                                                            //
-                                                            //                                                    $('#sidebar').affix({
-                                                            //                                                        offset: {
-                                                            //                                                            top: 245
-                                                            //                                                        }
-                                                            //                                                    });
-                                                            //
-                                                            //                                                    var $body = $(document.body);
-                                                            //                                                    var navHeight = $('.navbar').outerHeight(true) + 10;
-                                                            //
-                                                            //                                                    $body.scrollspy({
-                                                            //                                                        target: '#leftCol',
-                                                            //                                                        offset: navHeight
-                                                            //                                                    });
-                                                            //
-                                                            //                                                });
 
-                                                        </script>
                                                         <!-- AJAX LOADER-->
 
                                                         <script type="text/javascript">
@@ -252,12 +235,8 @@
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                                <script type="text/javascript" src="${pageContext.request.contextPath}/js/segment.js"></script>
-                                                                    <script type="text/javascript">
-                                                                        jQuery(function ($){
-                                                                             $(".segment-select").Segment();
-                                                                        });
-                                                                    </script>
+                                                                
+                                                                    
 
                                                         </body>
                                                         </html>

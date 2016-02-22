@@ -21,48 +21,50 @@
     
                                 <label for="superficieNiveau"><spring:message code="niveau.form.superficie"/> (m²): </label>
                                 <input name="superficieNiveau"  style="width:100%" class="form-control" required="required" type="number"  name="superficieNiveau" placeholder="Supérficie" id="superficieNiveau" />
-                                <div style="margin-bottom: 1px; margin-top: 1px;">
-                                    <div ><label  for="etat">Etat : </label></div>
-                                    <div >
-                                        <form:select id="etat" path="etat" name="etat" class="form-control segment-select">
-                                            <form:option value="" label="Etat" /> 
-                                            <form:options items="${niveauForm.etats}" />
-                                        </form:select>
-                                    </div>
-                                </div>
+                                
                                 <label  for="level"><spring:message code="niveau.form.level"/> :  </label>
                                 <form:select id="level" path="level" name="level" class="form-control" required="required">
                                     <form:option value="" label="" /> 
                                     <form:options items="${niveauForm.levels}" />
                                 </form:select>
-                              
-                            <div style="border: 1px solid red; margin-top: 2px">    
-                                <div class="row" style="margin-top: 2px">
-                                    <div class="col-md-4">
-                                        <label for="camera"><spring:message code="niveau.form.camera"/>: </label>
-                                        <form:checkbox path="camera" ></form:checkbox>
+                                
+                                <div style="margin-bottom: 1px; margin-top: 1px;">
+                                    <div ><label  for="etat">Etat : </label></div>
+                                    <div >
+                                        <form:select id="etat" path="etat" name="etat" class="form-control segment-select">
+                                           
+                                            <form:options items="${niveauForm.etats}" />
+                                        </form:select>
                                     </div>
-                                    
-                                    <div class="col-md-4">
-                                      <label for="wifi"><spring:message code="niveau.form.wifi"/>: </label>
-                                       <form:checkbox  path="wifi"  ></form:checkbox>
-                                    </div> 
-                                    
-                                    <div class="col-md-4">                             
-                                      <label for="ascensseur"><spring:message code="niveau.form.ascensseur"/>: </label>
-                                       <form:checkbox    path="ascensseur"  ></form:checkbox>
-                                    </div> 
-                                    
                                 </div>
+                              
+                            <div style=" margin-top: 2px; ">    
+                                <div class="row" style="margin-top: 4px; margin-left: 2px">
+                                 
+                                        <label for="camera"><spring:message code="niveau.form.camera"/> </label>
+                                        <form:checkbox path="camera" data-toggle="toggle" data-size="mini" ></form:checkbox>
+                                   
                                     
-                                <div class="row" style="margin-top: 2px">
-                                     
+                                   
+                                      <label for="wifi"><spring:message code="niveau.form.wifi"/> </label>
+                                       <form:checkbox  path="wifi" data-toggle="toggle" data-size="mini" ></form:checkbox>
                                     
-                                    <div class="col-md-4">                             
-                                      <label for="extincteur"><spring:message code="niveau.form.extincteur"/>: </label>
-                                       <form:checkbox  path="extincteur"></form:checkbox>
-                                    </div> 
+
+                                    
+                                                             
+                                      <label for="ascensseur"><spring:message code="niveau.form.ascensseur"/> </label>
+                                       <input type="checkbox" name="ascenseur" data-toggle="toggle" data-size="mini" data-style="ios">
+                                  
+                                    
+                               
+                                    
+                                
+                                                             
+                                      <label for="extincteur"><spring:message code="niveau.form.extincteur"/> </label>
+                                       <form:checkbox  path="extincteur" data-toggle="toggle" data-size="mini"></form:checkbox>
+                           
                                 </div>    
+
                             </div> 
 
                                 <form:input type="hidden" path ="idLocalisation" name="idLocalisation" value="${localisationForm.idLocalisation}" />
@@ -81,4 +83,22 @@
             <!-- /.modal-dialog -->
         </div> <!-- Fin Modal Modification Fiche -->
     </div>
+    
+    <script type="text/javascript">
+
+        function applyTransformatio(){
+             $(".segment-select").Segment();
+             $('input[type="checkbox"]').bootstrapToggle({
+                  on: 'Oui',
+                  onstyle :'success',
+                  offstyle: 'danger',
+                  style:'ios',
+                  off: 'Non'
+             });
+        };
+        
+        applyTransformatio();
+        
+
+    </script>
 </sec:authorize>

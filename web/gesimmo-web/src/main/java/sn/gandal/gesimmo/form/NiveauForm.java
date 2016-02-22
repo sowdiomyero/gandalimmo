@@ -26,7 +26,7 @@ public class NiveauForm {
     String superficieNiveau;
     
     boolean extincteur; 
-    boolean ascensseur;
+    boolean ascenseur;
     boolean camera;
     boolean wifi;
     boolean escalier;
@@ -132,12 +132,12 @@ public class NiveauForm {
         this.level = level;
     }
 
-    public boolean isAscensseur() {
-        return ascensseur;
+    public boolean getAscenseur() {
+        return ascenseur;
     }
 
-    public void setAscensseur(boolean ascensseur) {
-        this.ascensseur = ascensseur;
+    public void setAscenseur(boolean ascensseur) {
+        this.ascenseur = ascensseur;
     }
 
 

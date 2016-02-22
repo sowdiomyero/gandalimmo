@@ -22,6 +22,7 @@ import sn.gandal.gesimmo.metier.GesImmoServiceManager;
 import sn.gandal.gesimmo.modele.client.entities.BatimentLocalite;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.Niveau;
+import sn.gandal.gesimmo.modele.client.entities.Niveau.ETAT;
 
 /**
  *
@@ -41,29 +42,23 @@ public class NiveauController {
     public @ResponseBody BasicResponse addNewNiveau(@RequestBody @Valid NiveauForm niveauForm, Model model) {
     
     BasicResponse response = new BasicResponse();
-    
-    
-    
+
     BatimentLocalite batiment = (BatimentLocalite) manager.getLocalisationService().getLocalisationById(niveauForm.getIdLocalisation());
     
     Niveau niveauBean = new Niveau();
-    niveauBean.setCamera(niveauForm.getCamera());
+    
     niveauBean.setBatiment(batiment);
     niveauBean.setEtage(niveauForm.getLevel());
+    niveauBean.setEtat(ETAT.valueOf(niveauForm.getEtat()));
+    niveauBean.setCamera(niveauForm.getCamera());
     niveauBean.setExtincteur(niveauForm.getExtincteur());
     niveauBean.setWifi(niveauForm.getWifi());
+    niveauBean.setAscenseur(niveauForm.getAscenseur());
     niveauBean.setLibelle(niveauForm.getLibelleNiveau());
     niveauBean.setSuperficie(niveauForm.getSuperficieNiveau());
     
     manager.getNiveauService().save(niveauBean);
     
-//    if(niveauForm.getIdLocalisation() != null && niveauForm.getIdLocalisation() > 0){
-//
-//        Localisation loc = manager.getLocalisationService().getLocalisationById(niveauForm.getIdLocalisation());
-//        
-//    }else{
-//        
-//    }
     response.setMsg("Valeurs reçues avec succès");
     response.setResultat(BasicResponse.RETOUR_OK);
     return response;

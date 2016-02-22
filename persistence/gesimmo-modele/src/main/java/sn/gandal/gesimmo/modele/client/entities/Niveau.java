@@ -83,8 +83,8 @@ public class Niveau extends AbstractDateEntity implements Serializable {
     private String superficie;
     @Column(name = "camera")
     private boolean camera;
-    @Column(name = "asscensseur")
-    private boolean asscensseur;
+    @Column(name = "ascenseur")
+    private boolean ascenseur;
     @Column(name = "extincteur")
     private boolean extincteur;
     @Column(name = "wifi")
@@ -144,12 +144,12 @@ public class Niveau extends AbstractDateEntity implements Serializable {
         this.camera = camera;
     }
 
-    public boolean isAsscensseur() {
-        return asscensseur;
+    public boolean isAscenseur() {
+        return ascenseur;
     }
 
-    public void setAsscensseur(boolean asscensseur) {
-        this.asscensseur = asscensseur;
+    public void setAscenseur(boolean ascenseur) {
+        this.ascenseur = ascenseur;
     }
 
     public boolean isExtincteur() {
