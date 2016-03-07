@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import sn.gandal.gesimmo.metier.GesImmoServiceManager;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 
@@ -30,7 +31,6 @@ public class LocalisationBrowser {
     GesImmoServiceManager manager;
     
     @RequestMapping(value = "/site/{key}", method = RequestMethod.GET)
-
     public String browseSite(@PathVariable(value = "key")Long clef, Model model) {
     
         //1- recuperer le site avec l'id fournir
@@ -47,13 +47,20 @@ public class LocalisationBrowser {
     
     @RequestMapping(value = "/batiment/{key}", method = RequestMethod.GET)
     public String browseBatiment(@PathVariable(value = "key")Long clef, Model model) {
-    if(clef != null){       
-        Localisation loc = manager.getLocalisationService().getLocalisationById(clef);    
-    }else{
-        
-    }
+
+        //    if(clef != null){       
+//        Localisation loc = manager.getLocalisationService().getLocalisationById(clef);    
+//    }else{
+//        
+//    }
 
     return "browse/batiment";
 
+    }
+    
+    @RequestMapping(value = "/batiment/{key}/niveaux", method = RequestMethod.GET)
+    public @ResponseBody String jsonGetBatimentNiveaux(@PathVariable(value = "key")Long clef, Model model) {
+    
+        return "{\"status\":\"ok\", \"message\" :\"recu 4 sur 4\", \"clef\":"+clef+"}";
     }
 }

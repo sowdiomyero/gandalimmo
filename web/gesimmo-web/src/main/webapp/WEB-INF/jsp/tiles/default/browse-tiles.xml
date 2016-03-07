@@ -8,9 +8,13 @@
         <put-attribute name="nav" value="/WEB-INF/jsp/v1/layouts/siteNav.jsp" />
       </definition>
 
-     <definition name="browse/batiment" extends="browse">
-        <put-attribute name="nav" value="/WEB-INF/jsp/v1/layouts/batimentNav.jsp" />
+     <definition name="browse/batiment" extends="gentelella">
+        <put-attribute name="statistiques" value="/WEB-INF/jsp/v1/browse/batiment/batimentStatistiques.jsp" />
     </definition>
+    
+<!--    <definition name="browse/batiment" extends="browse">
+        <put-attribute name="nav" value="/WEB-INF/jsp/v1/layouts/batimentNav.jsp" />
+    </definition>-->
 
 
 

@@ -36,6 +36,10 @@ public class IGesimmoMetierImpl implements IGesimmoMetier {
 
     @Autowired
     IUsersDao user;
+    
+    @Autowired
+    IProprietaireDao proprio;
+
 
     @Autowired
     IZoneDao zoneDao;
@@ -87,9 +91,12 @@ public class IGesimmoMetierImpl implements IGesimmoMetier {
 
         if (entityClass == Role.class) {
             return role.findOne(id);
-        }
+        }  
         if (entityClass == Zone.class) {
             return zone.findOne(id);
+        }
+        if (entityClass == Proprietaire.class) {
+            return proprio.findOne(id);
         }
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
@@ -189,7 +196,18 @@ public class IGesimmoMetierImpl implements IGesimmoMetier {
         List<User> users= user.findAllUsers();
         Map<Long, String> resultat = new HashMap<Long, String>();
         for(User u : users){
-            String fullName = u.getUserPrenom()+" "+u.getUserName().toUpperCase();
+            
+            resultat.put(u.getIdUser(), u.toString());
+        }
+        return resultat;
+    }
+    
+     @Override
+    public Map<Long, String> findAllProprietaires() {
+        List<Proprietaire> proprietaires= proprio.findAllProprietaires();
+        Map<Long, String> resultat = new HashMap<Long, String>();
+        for(Proprietaire u : proprietaires){
+            
             resultat.put(u.getIdUser(), u.toString());
         }
         return resultat;

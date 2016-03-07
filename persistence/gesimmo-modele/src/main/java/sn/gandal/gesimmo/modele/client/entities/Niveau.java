@@ -4,7 +4,10 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 /**
  * Created with IntelliJ IDEA. User: DYSOW Date: 10/03/15 Time: 10:45 To change
@@ -93,6 +96,12 @@ public class Niveau extends AbstractDateEntity implements Serializable {
     @ManyToOne
     @JoinColumn(name = "id_batiment")
     private BatimentLocalite batiment;
+    
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "niveau_caracteristique", joinColumns = @JoinColumn(name = "ID_NIVEAU"),
+            inverseJoinColumns = @JoinColumn(name = "ID_CARACTERISTIQUE"))
+    private List<Caracteristique> caracteristiques;
 
     public Niveau() {
     }
@@ -200,6 +209,14 @@ public class Niveau extends AbstractDateEntity implements Serializable {
                 }
      
         return resultat;
+    }
+
+    public List<Caracteristique> getCaracteristiques() {
+        return caracteristiques;
+    }
+
+    public void setCaracteristiques(List<Caracteristique> caracteristiques) {
+        this.caracteristiques = caracteristiques;
     }
 
     public void setEtat(ETAT etat) {

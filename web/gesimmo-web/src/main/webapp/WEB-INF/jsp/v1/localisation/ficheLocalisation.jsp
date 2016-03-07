@@ -136,6 +136,15 @@
                     ${localisationSelected.createur}
                 </div>
             </div>
+             <div class="row">
+                <div class="col-md-6 col-sm-4 col-xs-6">
+                    <span class="label label-info">Proprietaire: </span>
+                </div>
+                <div class="col-md-6 col-sm-8 col-xs-6">
+                    
+                    <span class="label label-info">${localisationSelected.proprietaire}</span>
+                </div>
+            </div>
         </div>   
     </div>
 
@@ -255,12 +264,11 @@
     </div>
 </div>
 </div>
-                <script>
-    function activeTab(tab) {
-        $('.nav-pills a[href="#' + tab + '"]').tab('show');
-    }
-    ;
-    activeTab('toutes');
+  <script>
+//    function activeTab(tab) {
+//        $('.nav-pills a[href="#' + tab + '"]').tab('show');
+//    };
+//    activeTab('toutes');
 </script>
 
 

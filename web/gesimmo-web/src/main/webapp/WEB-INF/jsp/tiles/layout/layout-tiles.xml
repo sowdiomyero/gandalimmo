@@ -27,5 +27,16 @@
         <put-attribute name="header" value="/WEB-INF/jsp/v1/layouts/header.jsp" />
         <put-attribute name="banniere" value="/WEB-INF/jsp/v1/layouts/banniere.jsp" />
     </definition>
+    
+    <definition name="gentelella" template="/WEB-INF/jsp/v1/layouts/template/template.jsp">
+
+        <put-attribute name="topNav" value="/WEB-INF/jsp/v1/layouts/template/topNav.jsp" />
+        <put-attribute name="leftNav" value="/WEB-INF/jsp/v1/layouts/template/leftNav.jsp" />
+<!--    <put-attribute name="statistiques" value="/WEB-INF/jsp/v1/layouts/template/statistiques.jsp" />
+        <put-attribute name="rowHistoriques" value="/WEB-INF/jsp/v1/layouts/template/rowHistoriques.jsp" />       
+        <put-attribute name="rowWorkProgression" value="/WEB-INF/jsp/v1/layouts/template/rowWorkProgression.jsp" />
+        <put-attribute name="rowActivites" value="/WEB-INF/jsp/v1/layouts/template/rowActivites.jsp" />-->
+        <put-attribute name="rowNiveaux" value="/WEB-INF/jsp/v1/layouts/template/rowNiveaux.jsp" />
+    </definition>
 
  </tiles-definitions>

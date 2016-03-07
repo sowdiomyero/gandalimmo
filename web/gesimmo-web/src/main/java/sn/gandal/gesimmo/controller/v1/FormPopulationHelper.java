@@ -37,7 +37,6 @@ public class FormPopulationHelper {
         result.setOldResponsable(loc.getAttribution() != null ? String.valueOf(loc.getAttribution().getIdUser()) : "");       
         result.setOldRattachement(loc.getParentLocalisation() != null ? String.valueOf(loc.getParentLocalisation().getIdLocalisation()) : "");
         result.setRattachement(loc.getParentLocalisation() != null ? loc.getParentLocalisation().toString(): "");
-        
         if(loc.getDType().equals(TableConfig.DTYPE_INCIDENT)){
             result.setGravites(ObjetIncident.getAllGraviteLevel());
             result.setGravite(((ObjetIncident)loc).getGravite());
@@ -61,11 +60,17 @@ public class FormPopulationHelper {
         result.setCleLocalite(loc.getKeyPath());
                
         result.setResponsables(serviceManager.getGesimmoMetierService().findAllResponsables());
+        
         result.setListResponsables(serviceManager.getGesimmoMetierService().findAllUsers());
 
         result.setdType(serviceManager.getGesimmoMetierService().getTypeLicenceLocalite());
-        result.setZones(serviceManager.getZoneService().getAllZones());         
+        result.populateZones(serviceManager.getZoneService().getAllZones());         
+        
+        result.setProprietaires(serviceManager.getGesimmoMetierService().findAllProprietaires());
+        result.setProprietaire(loc.getProprietaire() != null ? loc.getProprietaire().getIdUser().toString() : "");
        
+        result.setListeCaracteristiques(serviceManager.getLocalisationService().findCaracteristiquesMap());
+        result.setCaracteristique(loc.getCaracteristiquesTab());
         return result;
     }
 }

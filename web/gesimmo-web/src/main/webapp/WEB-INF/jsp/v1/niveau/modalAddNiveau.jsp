@@ -31,14 +31,23 @@
                                 <div style="margin-bottom: 1px; margin-top: 1px;">
                                     <div ><label  for="etat">Etat : </label></div>
                                     <div >
-                                        <form:select id="etat" path="etat" name="etat" class="form-control segment-select">
-                                           
+                                        <form:select  id="etat" path="etat"  name="etat" class="form-control">                                          
                                             <form:options items="${niveauForm.etats}" />
                                         </form:select>
                                     </div>
                                 </div>
+                                
+                                <div style="margin-bottom: 1px; margin-top: 1px;">
+                                    <div ><label  for="etat">Caracteristiques : </label></div>
+                                    <div>
+                                        <form:select style="width:100%" multiple="multiple" id="caracteristiques" path="caracteristique"  class="SlectBox form-control">                                          
+                                            <form:options items="${niveauForm.listeCaracteristiques}" />
+                                        </form:select>
+                                    </div>
+                                  
+                                </div>
                               
-                            <div style=" margin-top: 2px; ">    
+<%--                            <div style=" margin-top: 2px; ">    
                                 <div class="row" style="margin-top: 4px; margin-left: 2px">
                                  
                                         <label for="camera"><spring:message code="niveau.form.camera"/> </label>
@@ -65,7 +74,7 @@
                            
                                 </div>    
 
-                            </div> 
+                            </div> --%>
 
                                 <form:input type="hidden" path ="idLocalisation" name="idLocalisation" value="${localisationForm.idLocalisation}" />
 
@@ -83,11 +92,14 @@
             <!-- /.modal-dialog -->
         </div> <!-- Fin Modal Modification Fiche -->
     </div>
-    
+
     <script type="text/javascript">
 
-        function applyTransformatio(){
+        function applyTransformation(){
              $(".segment-select").Segment();
+            // $('#caracteristiques').tokenize();
+             //$('#caracteristiques').SumoSelect();
+             $('.SlectBox').SumoSelect(); 
              $('input[type="checkbox"]').bootstrapToggle({
                   on: 'Oui',
                   onstyle :'success',
@@ -97,8 +109,9 @@
              });
         };
         
-        applyTransformatio();
-        
+
+        applyTransformation();
+       
 
     </script>
 </sec:authorize>

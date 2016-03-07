@@ -17,129 +17,130 @@
             <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
                 <link href="${pageContext.request.contextPath}/css/idyal_ccs.css" type="text/css" rel="stylesheet">
                     <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
-                        <link href="${pageContext.request.contextPath}/css/jquery.dataTables.css" type="text/css" rel="stylesheet">
-                            <link href="${pageContext.request.contextPath}/css/dataTables.responsive.css" type="text/css" rel="stylesheet">
-                                <link href="${pageContext.request.contextPath}/css/sb-admin-rtl.css" type="text/css" rel="stylesheet">
-                                    <link href="${pageContext.request.contextPath}/css/sb-admin.css" type="text/css" rel="stylesheet">
-                                        <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet">
-                                            <link href="${pageContext.request.contextPath}/css/selectize.css" type="text/css" rel="stylesheet">
-                                                <script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/jquery-dataTable.min.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/gandalFunctions.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/gandalAjax.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/notify.min.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/esecure.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/gesimmo.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/selectize.js"></script>
-                                                <script src="${pageContext.request.contextPath}/js/dataTables.responsive.js"></script>
-                  
+                    <link href="${pageContext.request.contextPath}/css/jquery.dataTables.css" type="text/css" rel="stylesheet">
+                    <link href="${pageContext.request.contextPath}/css/dataTables.responsive.css" type="text/css" rel="stylesheet">
+                    <link href="${pageContext.request.contextPath}/css/sb-admin-rtl.css" type="text/css" rel="stylesheet">
+                    <link href="${pageContext.request.contextPath}/css/sb-admin.css" type="text/css" rel="stylesheet">
+                    <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet">
+                    <link href="${pageContext.request.contextPath}/css/selectize.css" type="text/css" rel="stylesheet">
+                        
+                    <script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/jquery-dataTable.min.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/gandalFunctions.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/gandalAjax.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/notify.min.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/esecure.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/gesimmo.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/selectize.js"></script>
+                    <script src="${pageContext.request.contextPath}/js/dataTables.responsive.js"></script>
 
-                                                <script type='text/javascript'>
 
-                                                    $(document).ready(function() {
+                    <script type='text/javascript'>
 
-                                                        $('#sidebar').affix({
-                                                            offset: {
-                                                                top: 245
-                                                            }
-                                                        });
+                        $(document).ready(function() {
 
-                                                        var $body = $(document.body);
-                                                        var navHeight = $('.navbar').outerHeight(true) + 10;
+                            $('#sidebar').affix({
+                                offset: {
+                                    top: 245
+                                }
+                            });
 
-                                                        $body.scrollspy({
-                                                            target: '#leftCol',
-                                                            offset: navHeight
-                                                        });
+                            var $body = $(document.body);
+                            var navHeight = $('.navbar').outerHeight(true) + 10;
 
-                                                    });
+                            $body.scrollspy({
+                                target: '#leftCol',
+                                offset: navHeight
+                            });
 
-                                                </script>
-                                                 <!-- AJAX LOADER-->
+                        });
 
-                                                <script type="text/javascript">
-                                                    function ajaxindicatorstart(text)
-                                                    {
-                                                        if (jQuery('body').find('#resultLoading').attr('id') != 'resultLoading') {
-                                                            jQuery('body').append('<div id="resultLoading" style="display:none">' +
-                                                                    '<div>' +
-                                                                    '<img src="img/loading.gif" style="width: 100px; height: 100px">' +
-                                                                    '<div>' + text + '</div>' +
-                                                                    '</div>' +
-                                                                    '<div class="bg"></div>' +
-                                                                    '</div>');
-                                                        }
+                    </script>
+                     <!-- AJAX LOADER-->
 
-                                                        jQuery('#resultLoading').css({
-                                                            'width': '100%',
-                                                            'height': '100%',
-                                                            'position': 'fixed',
-                                                            'z-index': '10000000',
-                                                            'top': '0',
-                                                            'left': '0',
-                                                            'right': '0',
-                                                            'bottom': '0',
-                                                            'margin': 'auto'
-                                                        });
+                    <script type="text/javascript">
+                        function ajaxindicatorstart(text)
+                        {
+                            if (jQuery('body').find('#resultLoading').attr('id') != 'resultLoading') {
+                                jQuery('body').append('<div id="resultLoading" style="display:none">' +
+                                        '<div>' +
+                                        '<img src="img/loading.gif" style="width: 100px; height: 100px">' +
+                                        '<div>' + text + '</div>' +
+                                        '</div>' +
+                                        '<div class="bg"></div>' +
+                                        '</div>');
+                            }
 
-                                                        jQuery('#resultLoading .bg').css({
-                                                            'background': '#000000',
-                                                            'opacity': '0.7',
-                                                            'width': '100%',
-                                                            'height': '100%',
-                                                            'position': 'absolute',
-                                                            'top': '0'
-                                                        });
+                            jQuery('#resultLoading').css({
+                                'width': '100%',
+                                'height': '100%',
+                                'position': 'fixed',
+                                'z-index': '10000000',
+                                'top': '0',
+                                'left': '0',
+                                'right': '0',
+                                'bottom': '0',
+                                'margin': 'auto'
+                            });
 
-                                                        jQuery('#resultLoading>div:first').css({
-                                                            'width': '250px',
-                                                            'height': '75px',
-                                                            'text-align': 'center',
-                                                            'position': 'fixed',
-                                                            'top': '0',
-                                                            'left': '0',
-                                                            'right': '0',
-                                                            'bottom': '0',
-                                                            'margin': 'auto',
-                                                            'font-size': '16px',
-                                                            'z-index': '10',
-                                                            'color': '#ffffff'
+                            jQuery('#resultLoading .bg').css({
+                                'background': '#000000',
+                                'opacity': '0.7',
+                                'width': '100%',
+                                'height': '100%',
+                                'position': 'absolute',
+                                'top': '0'
+                            });
 
-                                                        });
+                            jQuery('#resultLoading>div:first').css({
+                                'width': '250px',
+                                'height': '75px',
+                                'text-align': 'center',
+                                'position': 'fixed',
+                                'top': '0',
+                                'left': '0',
+                                'right': '0',
+                                'bottom': '0',
+                                'margin': 'auto',
+                                'font-size': '16px',
+                                'z-index': '10',
+                                'color': '#ffffff'
 
-                                                        jQuery('#resultLoading .bg').height('100%');
-                                                        jQuery('#resultLoading').fadeIn(300);
-                                                        jQuery('body').css('cursor', 'wait');
-                                                    }
+                            });
 
-                                                    function ajaxindicatorstop()
-                                                    {
-                                                        jQuery('#resultLoading .bg').height('100%');
-                                                        jQuery('#resultLoading').fadeOut(300);
-                                                        jQuery('body').css('cursor', 'default');
-                                                    }
+                            jQuery('#resultLoading .bg').height('100%');
+                            jQuery('#resultLoading').fadeIn(300);
+                            jQuery('body').css('cursor', 'wait');
+                        }
 
-                                                    /*function callAjax()
-                                                     {
-                                                     jQuery.ajax({
-                                                     type: "GET",
-                                                     url: "fetch_data.jsp",
-                                                     cache: false,
-                                                     success: function(res){
-                                                     jQuery('#ajaxcontent').html(res);
-                                                     }
-                                                     });
-                                                     }*/
+                        function ajaxindicatorstop()
+                        {
+                            jQuery('#resultLoading .bg').height('100%');
+                            jQuery('#resultLoading').fadeOut(300);
+                            jQuery('body').css('cursor', 'default');
+                        }
 
-                                                    //                                                jQuery(document).ajaxStart(function() {
-                                                    //                                                    //show ajax indicator
-                                                    //                                                    ajaxindicatorstart('Chargement des donnees... Veuillez patienter SVP');
-                                                    //                                                }).ajaxStop(function() {
-                                                    //                                                    //hide ajax indicator
-                                                    //                                                    ajaxindicatorstop();
-                                                    //                                                });
-                                                </script>
+                        /*function callAjax()
+                         {
+                         jQuery.ajax({
+                         type: "GET",
+                         url: "fetch_data.jsp",
+                         cache: false,
+                         success: function(res){
+                         jQuery('#ajaxcontent').html(res);
+                         }
+                         });
+                         }*/
+
+                        //                                                jQuery(document).ajaxStart(function() {
+                        //                                                    //show ajax indicator
+                        //                                                    ajaxindicatorstart('Chargement des donnees... Veuillez patienter SVP');
+                        //                                                }).ajaxStop(function() {
+                        //                                                    //hide ajax indicator
+                        //                                                    ajaxindicatorstop();
+                        //                                                });
+                    </script>
 
 
                                                 </head>

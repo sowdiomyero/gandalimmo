@@ -6,9 +6,11 @@
 package sn.gandal.gesimmo.metier.services;
 
 import java.util.List;
+import java.util.Map;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.ObjetIncident;
 import sn.gandal.gesimmo.modele.client.entities.BatimentLocalite;
+import sn.gandal.gesimmo.modele.client.entities.Caracteristique;
 import sn.gandal.gesimmo.modele.client.entities.User;
 import sn.gandal.gesimmo.modele.client.tools.LocalisationFormFilter;
 
@@ -66,5 +68,9 @@ public interface ILocalisationMetier {
     public  boolean isKeyExist(String key);
     
     public List<Localisation> findAllLocalisations();
+    
+    public List<Caracteristique> findAllCaracteristiques();
+     public Map<String, String> findCaracteristiquesMap();
+     public List<Caracteristique> findCaracteristiquesFromList(Long[] list);
 
 }

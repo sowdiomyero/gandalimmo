@@ -100,7 +100,7 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "localisation")
     private List<LocalisationIndicateur> localisationIndicateurs = new ArrayList<LocalisationIndicateur>();
-// Fin d�claration param�tres
+
     @ManyToOne
     @JoinColumn(name = "id_createur")
     public User createur;        
@@ -109,14 +109,23 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
     @JoinColumn(name = "id_responsable")
     private User attribution;
     
+    @ManyToOne
+    @JoinColumn(name = "id_proprio")
+    public Proprietaire proprietaire;    
+    
     @Column(name = "clef", length = 50)
     protected String clef;
     
     @ManyToOne
     @JoinColumn(name = "id_zone")
     public Zone zone; 
-    
 
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "localisation_caracteristique", joinColumns = @JoinColumn(name = "ID_LOCALISATION"),
+            inverseJoinColumns = @JoinColumn(name = "ID_CARACTERISTIQUE"))
+    private List<Caracteristique> caracteristiques;
+    
     
     // Constructeurs
     public Localisation(String nom) {
@@ -270,6 +279,14 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
         this.attribution = attribution;
     }
 
+    public Proprietaire getProprietaire() {
+        return proprietaire;
+    }
+
+    public void setProprietaire(Proprietaire proprietaire) {
+        this.proprietaire = proprietaire;
+    }
+
     public String getClef() {
 
         return clef;
@@ -312,6 +329,31 @@ public abstract class Localisation extends AbstractDateEntity implements Seriali
            return resultat;
        }
 
+    public List<Caracteristique> getCaracteristiques() {
+        return caracteristiques;
+    }
+    
+    public Long[] getCaracteristiquesTab() {
+        
+       List<Caracteristique> list = getCaracteristiques();
+       if(list == null || list.size() <=0)
+           return new Long[]{};
+       Long[] result = new Long[list.size()];
+       int i =0;
+        for(Caracteristique c : list){
+            result[i] = c.getIdCaracteristique();
+            i++;
+        }
+        
+        return result;
+    }
+
+    public void setCaracteristiques(List<Caracteristique> caracteristiques) {
+        this.caracteristiques = caracteristiques;
+    }
+
+    
+    
 // Fin d�claration Getters and Setters
     @Override
     public int hashCode() {

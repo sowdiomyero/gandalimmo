@@ -24,12 +24,9 @@ public class NiveauForm {
     String libelleNiveau;
     //@Pattern(regexp = "{A-Za-z0-9}*")
     String superficieNiveau;
-    
-    boolean extincteur; 
-    boolean ascenseur;
-    boolean camera;
-    boolean wifi;
-    boolean escalier;
+  
+    Map<String, String> listeCaracteristiques = new HashMap<String, String>();
+    Long[] caracteristique = new Long[]{};
     
     
 
@@ -41,7 +38,6 @@ public class NiveauForm {
     String level;
 
     public NiveauForm() {
-
     }
 
     public Long getIdLocalisation() {
@@ -67,39 +63,6 @@ public class NiveauForm {
     public void setSuperficieNiveau(String superficieNiveau) {
         this.superficieNiveau = superficieNiveau;
     }
-
-    public boolean getExtincteur() {
-        return extincteur;
-    }
-
-    public void setExtincteur(boolean extincteur) {
-        this.extincteur = extincteur;
-    }
-
-    public boolean getCamera() {
-        return camera;
-    }
-
-    public void setCamera(boolean camera) {
-        this.camera = camera;
-    }
-
-    public boolean getWifi() {
-        return wifi;
-    }
-
-    public void setWifi(boolean wifi) {
-        this.wifi = wifi;
-    }
-
-    public boolean getEscalier() {
-        return escalier;
-    }
-
-    public void setEscalier(boolean escalier) {
-        this.escalier = escalier;
-    }
-
     public String getEtat() {
         return etat;
     }
@@ -132,13 +95,24 @@ public class NiveauForm {
         this.level = level;
     }
 
-    public boolean getAscenseur() {
-        return ascenseur;
+   
+
+    public Map<String, String> getListeCaracteristiques() {
+        return listeCaracteristiques;
     }
 
-    public void setAscenseur(boolean ascensseur) {
-        this.ascenseur = ascensseur;
+    public void setListeCaracteristiques(Map<String, String> listeCaracteristiques) {
+        this.listeCaracteristiques = listeCaracteristiques;
     }
 
+    public Long[] getCaracteristique() {
+        return caracteristique;
+    }
+
+    public void setCaracteristique(Long[] caracteristique) {
+        this.caracteristique = caracteristique;
+    }
+
+    
 
 }

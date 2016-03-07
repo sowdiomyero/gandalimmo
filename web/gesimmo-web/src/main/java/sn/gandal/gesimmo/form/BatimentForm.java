@@ -14,6 +14,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import sn.gandal.gesimmo.dto.BasicResponse;
+import sn.gandal.gesimmo.modele.client.entities.Caracteristique;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.User;
 import sn.gandal.gesimmo.modele.client.entities.Zone;
@@ -72,10 +73,18 @@ public class BatimentForm extends BasicResponse {
     private String oldResponsable; 
     private String oldZone;
     
-    private String zone; 
-    
+    private String zone;    
     private Map<Long,String> zones = new HashMap<Long,String>();
 
+    private Long[] caracteristique = new Long[]{};    
+    private Map<String,String> caracteristiques = new HashMap<String,String>();
+    
+    
+    public BatimentForm() {
+        
+    }
+
+        
 
     public String getLocalisation() {
         return localisation;
@@ -85,8 +94,6 @@ public class BatimentForm extends BasicResponse {
         this.localisation = localisation;
     }
 
-    public BatimentForm() {
-    }
 
     
     public Long getIdLocalisation() {
@@ -301,8 +308,27 @@ public class BatimentForm extends BasicResponse {
         this.etatsBatiment = etatBatiment;
     }
 
-    
+    public Long[] getCaracteristique() {
+        return caracteristique;
+    }
 
+    public void setCaracteristique(Long[] caracteristique) {
+        this.caracteristique = caracteristique;
+    }
+
+    public Map<String, String> getCaracteristiques() {
+        return caracteristiques;
+    }
+
+    public void setCaracteristiques(Map<String, String> caracteristiques) {
+        this.caracteristiques = caracteristiques;
+    }
+
+    
+    public void populateListeCaracteristiques(List<Caracteristique> listeCaracteristiques) {
+        for(Caracteristique car : listeCaracteristiques)
+            this.caracteristiques.put(car.getIdCaracteristique().toString(), car.getNomCaracteristique());
+    }
     
 
    

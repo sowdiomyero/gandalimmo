@@ -26,6 +26,8 @@
                                                 <link href="${pageContext.request.contextPath}/css/font-awesome.css" type="text/css" rel="stylesheet">
                                                     <link href="${pageContext.request.contextPath}/css/selectize.css" type="text/css" rel="stylesheet">
                                                         <link href="${pageContext.request.contextPath}/css/segment.css" type="text/css" rel="stylesheet">
+                                                        <link href="${pageContext.request.contextPath}/css/sumoselect.css" type="text/css" rel="stylesheet">
+                                                            <link href="${pageContext.request.contextPath}/css/jquery.tokenize.css" type="text/css" rel="stylesheet">
                                                         <link href="${pageContext.request.contextPath}/css/bootstrap-toggle.min.css" type="text/css" rel="stylesheet">
                                                         <script src="${pageContext.request.contextPath}/js/jquery-1.11.1.min.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/jquery-dataTable.min.js"></script>
@@ -38,6 +40,8 @@
                                                         <script src="${pageContext.request.contextPath}/js/selectize.js"></script>
                                                         <script src="${pageContext.request.contextPath}/js/dataTables.responsive.js"></script>
                                                         <script type="text/javascript" src="${pageContext.request.contextPath}/js/segment.js"></script>
+                                                        <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.sumoselect.min.js"></script>
+                                                         <script type="text/javascript" src="${pageContext.request.contextPath}/js/jquery.tokenize.js"></script>
                                                         <script type="text/javascript" src="${pageContext.request.contextPath}/js/bootstrap-toggle.min.js"></script>
                                                             
 
@@ -103,27 +107,37 @@
                                                                 jQuery('#resultLoading .bg').height('100%');
                                                                 jQuery('#resultLoading').fadeOut(300);
                                                                 jQuery('body').css('cursor', 'default');
+                                                                jQuery('#resultLoading').css('display', 'none');
                                                             }
 
-
+                                                            jQuery(document).ajaxStop(function() {
+                                                                //hide ajax indicator
+                                                               // alert("Appel fini");
+                                                               // ajaxindicatorstop();
+                                                            });        
 
                                                             jQuery(document).ajaxStart(function() {
                                                                 //show ajax indicator
                                                               //  ajaxindicatorstart('Chargement des donnees... Veuillez patienter SVP');
-                                                            }).ajaxStop(function() {
-                                                                //hide ajax indicator
-                                                              //  ajaxindicatorstop();
                                                             });
+                                                            
                                                         </script>
 
 
                                                         </head>
 
 
-                                                        <body style="" onload="">
-                                                            <%--<div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">
+                                                        <body>
+                                                            <div id="resultLoading" style="display:none">
+                                                                <div>
+                                                                    <img src="${pageContext.request.contextPath}/img/loading.gif" style="width: 100px; height: 100px">
+                                                                    <div > Chargement des donnees... Veuillez patienter SVP </div>  
+                                                                </div>
+                                                                    <div class="bg"></div>
+                                                            </div>
+<!--                                                            <div id='ajax_loader' style="position: fixed; left: 50%; top: 50%; display: none;">
                                                             <img   src="img/loading.gif" id="loading-indicator" style="display:none; " />
-                                                            </div>--%>
+                                                            </div>-->
                                                             <div class="wrap">
                                                                 <div class="navbar navbar-bright navbar-fixed-top" role="banner">
                                                                     <!-- Begin header -->

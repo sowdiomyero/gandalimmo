@@ -49,13 +49,21 @@
                             </c:forEach>
                     </form:select>
 
+                   
                     <c:if test="${localisationForm.dT == 'INCIDENT'}">
 
                         <label class="pull-left" for="graviteLocalisation"><spring:message code="label.localisation.tableau.header.gravite"/>: </label>
-                        <form:input class="form-control graviteLocalisation" id="graviteLocalisation" required="required"  path="gravite" placeholder="" />
-
+                 <%--       <form:input class="form-control graviteLocalisation" id="graviteLocalisation" required="required"  path="gravite" placeholder="" /> --%>
+                        <select name="gravite" class="form-control graviteLocalisation ui-segment" required="required" id="graviteLocalisation">
+                            <option value="1">Mineur</option>
+                            <option value="2">Majeur</option>
+                            <option value="3">Critique</option>                            
+                            <option value="4">Impact Service</option>
+                            <option value="5">Impact Vie</option>
+                            
+                        </select>
                     </c:if>
-
+          <%-- 
                     <c:if test="${localisationForm.dT == 'SITE'}">
 
                         <label class="pull-left" for="nbObjetsLocalisation"><spring:message code="label.localisation.tableau.header.nbobjets"/>: </label>
@@ -70,11 +78,21 @@
 
 
                     </c:if>
+    
+    --%>
                         
                     <label class="pull-left" for="selectResponsable">Responsable: </label>
                     <form:select id="selectResponsable" path="responsable" class="form-control">
                         <form:option value="" label=""/> 
                         <c:forEach items="${localisationForm.responsables}" var="mapEntry" >
+                                <form:option value="${mapEntry.key}" label="${mapEntry.value}"/> 
+                            </c:forEach>
+                    </form:select>
+                    
+                    <label class="pull-left" for="selectProprietaire">Proprietaire: </label>
+                    <form:select id="selectProprietaire" path="proprietaire" class="form-control">
+                        <form:option value="" label=""/> 
+                        <c:forEach items="${localisationForm.proprietaires}" var="mapEntry" >
                                 <form:option value="${mapEntry.key}" label="${mapEntry.value}"/> 
                             </c:forEach>
                     </form:select>
@@ -107,5 +125,23 @@
                 <button type="button" id ="closeLocalisationForm" onClick=""  data-dismiss="modal" class="btn btn-warning"><spring:message code="label.bouton.fermer"/></button>
             </div>
     </c:if>
+    
+     <script type="text/javascript">
+
+        function applyTransformatio(){
+             $(".segment-select").Segment();
+             $('input[type="checkbox"]').bootstrapToggle({
+                  on: 'Oui',
+                  onstyle :'success',
+                  offstyle: 'danger',
+                  style:'ios',
+                  off: 'Non'
+             });
+        };
+        
+        applyTransformatio();
+        
+
+    </script>
 </sec:authorize>
 

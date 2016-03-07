@@ -6,6 +6,7 @@
 package sn.gandal.gesimmo.metierImpl;
 
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.collections.IteratorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import sn.gandal.gesimmo.metier.services.ILocalisationMetier;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.ObjetIncident;
 import sn.gandal.gesimmo.modele.client.entities.BatimentLocalite;
+import sn.gandal.gesimmo.modele.client.entities.Caracteristique;
 import sn.gandal.gesimmo.modele.client.entities.User;
 import sn.gandal.gesimmo.modele.client.tools.LocalisationFormFilter;
 import sn.gandal.gesimmo.service.ILocalisationDao;
@@ -213,6 +215,21 @@ public class LocalisationMetierImpl implements ILocalisationMetier {
     public List<Localisation> findAllLocalisations() {       
         return localisation.findAllLocalisations();
       
+    }
+
+    @Override
+    public List<Caracteristique> findAllCaracteristiques() {
+      return  localisation.findAllCaracteristiques();
+    }
+
+    @Override
+    public Map<String, String> findCaracteristiquesMap() {
+        return  localisation.findCaracteristiquesMap();
+    }
+
+    @Override
+    public List<Caracteristique> findCaracteristiquesFromList(Long[] list) {
+        return  localisation.findCaracteristiquesFromList(list);
     }
     
     

@@ -14,6 +14,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 import sn.gandal.gesimmo.dto.BasicResponse;
+import sn.gandal.gesimmo.modele.client.entities.Caracteristique;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.User;
 import sn.gandal.gesimmo.modele.client.entities.Zone;
@@ -60,9 +61,12 @@ public class EditLocalisationForm extends BasicResponse {
     private List<String> typeIncidentOuLocalite = new ArrayList<String>();
     private List<String> gravites = new ArrayList<String>();
     
-    private Map<Long,String> responsables = new HashMap<Long,String>();
+    private Map<Long,String> responsables = new HashMap<Long,String>();    
     private List<User> listResponsables = new ArrayList<User>();
     private String responsable;
+    
+    private Map<Long,String> proprietaires = new HashMap<Long,String>();
+    private String proprietaire;
     
     private User responsableAttribution;
 //    private List<String> typeIncidentOuLocalite = new ArrayList<String>();
@@ -78,10 +82,17 @@ public class EditLocalisationForm extends BasicResponse {
       
     private String oldRattachement;
     private String oldResponsable; 
+    private String oldProprietaire; 
     private String oldZone;
-    
+    /**
+     * La valeur doit être testé avec l'identifiant c'est à dire la claf de la map : key : idZone
+     * La map contient key:value ici value correspond à optionLibelle la key à optionValue
+     */
     private String zone;    
     private Map<Long,String> zones = new HashMap<Long,String>();
+    
+    private Map<String, String> listeCaracteristiques = new HashMap<String, String>();
+    private Long[] caracteristique = new Long[]{};
 
 
     public String getLatitudeMin() {
@@ -336,6 +347,30 @@ public class EditLocalisationForm extends BasicResponse {
         this.oldResponsable = oldResponsable;
     }
 
+    public String getOldProprietaire() {
+        return oldProprietaire;
+    }
+
+    public void setOldProprietaire(String oldProprietaire) {
+        this.oldProprietaire = oldProprietaire;
+    }
+
+    public Map<Long, String> getProprietaires() {
+        return proprietaires;
+    }
+
+    public void setProprietaires(Map<Long, String> proprietaires) {
+        this.proprietaires = proprietaires;
+    }
+
+    public String getProprietaire() {
+        return proprietaire;
+    }
+
+    public void setProprietaire(String proprietaire) {
+        this.proprietaire = proprietaire;
+    }
+
     public String getOldZone() {
         return oldZone;
     }
@@ -382,7 +417,33 @@ public class EditLocalisationForm extends BasicResponse {
         }
     }
 
+   
+
+    public Long[] getCaracteristique() {
+        return caracteristique;
+    }
+
+    public void setCaracteristique(Long[] caracteristique) {
+        this.caracteristique = caracteristique;
+    }
     
+    public Map<String, String> getListeCaracteristiques() {
+        return listeCaracteristiques;
+    }
+
+    public void setListeCaracteristiques(Map<String, String> listeCaracteristiques) {
+        this.listeCaracteristiques = listeCaracteristiques;
+    }
+    
+    public void populateListeCaracteristiques(List<Caracteristique> listeCaracteristiques) {
+        for(Caracteristique car : listeCaracteristiques)
+            this.listeCaracteristiques.put(car.getIdCaracteristique().toString(), car.getNomCaracteristique());
+    }
+
+        public void populateZones(List<Zone> zones) {
+        for(Zone car : zones)
+            this.zones.put(car.getIdZone(), car.getNomZoneGoogle());
+    }
 
    
     

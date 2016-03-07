@@ -6,6 +6,7 @@
 
 package sn.gandal.gesimmo.controller.v1;
 
+import java.util.List;
 import java.util.logging.Logger;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import sn.gandal.gesimmo.dto.BasicResponse;
 import sn.gandal.gesimmo.form.NiveauForm;
 import sn.gandal.gesimmo.metier.GesImmoServiceManager;
 import sn.gandal.gesimmo.modele.client.entities.BatimentLocalite;
+import sn.gandal.gesimmo.modele.client.entities.Caracteristique;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.Niveau;
 import sn.gandal.gesimmo.modele.client.entities.Niveau.ETAT;
@@ -46,14 +48,16 @@ public class NiveauController {
     BatimentLocalite batiment = (BatimentLocalite) manager.getLocalisationService().getLocalisationById(niveauForm.getIdLocalisation());
     
     Niveau niveauBean = new Niveau();
-    
+    Long[] listCaracteristiques = niveauForm.getCaracteristique();
+    List<Caracteristique> caractrtq = manager.getLocalisationService().findCaracteristiquesFromList(listCaracteristiques);
+    niveauBean.setCaracteristiques(caractrtq);
     niveauBean.setBatiment(batiment);
     niveauBean.setEtage(niveauForm.getLevel());
     niveauBean.setEtat(ETAT.valueOf(niveauForm.getEtat()));
-    niveauBean.setCamera(niveauForm.getCamera());
-    niveauBean.setExtincteur(niveauForm.getExtincteur());
-    niveauBean.setWifi(niveauForm.getWifi());
-    niveauBean.setAscenseur(niveauForm.getAscenseur());
+//    niveauBean.setCamera(niveauForm.getCamera());
+//    niveauBean.setExtincteur(niveauForm.getExtincteur());
+//    niveauBean.setWifi(niveauForm.getWifi());
+//    niveauBean.setAscenseur(niveauForm.getAscenseur());
     niveauBean.setLibelle(niveauForm.getLibelleNiveau());
     niveauBean.setSuperficie(niveauForm.getSuperficieNiveau());
     

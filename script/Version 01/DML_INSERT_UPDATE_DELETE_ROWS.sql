@@ -1,0 +1,134 @@
+-- phpMyAdmin SQL Dump
+-- version 3.5.1
+-- http://www.phpmyadmin.net
+--
+-- Client: localhost
+-- Généré le: Lun 22 Février 2016 à 14:29
+-- Version du serveur: 5.5.24-log
+-- Version de PHP: 5.4.3
+
+SET FOREIGN_KEY_CHECKS=0;
+SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8 */;
+
+--
+-- Base de données: `gesimmo`
+--
+
+
+INSERT INTO `compte` (`ID_COMPTE`, `DATE_CREATION`, `DATE_UPDATED`, `ETAT`, `LOGIN`, `PASSWORD`) VALUES
+(84, '2015-03-27 00:00:00', '2015-11-13 16:52:05', 1, 'dysow', '77cb141d760ec14a09e1a4f1e3373d5865b41d300adb854200ddd6096c9ed55f'),
+(103, '2015-11-13 12:01:37', '2015-11-20 15:05:19', 1, 'mosow', '28903e17dcf1620a7273c44b1339260d0bf24b654ca6da33f6431e243bb074f6'),
+(104, '2015-11-13 12:03:05', '2016-01-19 04:32:36', 1, 'ddiaw', 'b000297da4d786414408dca8b2db668ffa2857457700e42c61e87b8daa19739a'),
+(105, '2015-11-13 12:03:52', '2015-11-13 12:10:56', 1, 'kcisse', 'a930033c2b72d315586706d59795b3151b80d2266898cb0215fe2163bc485a2f'),
+(106, '2015-11-13 12:04:30', '2015-11-13 12:10:44', 1, 'athiang', 'fadb83098b20bf88a3abe9993ee836fcf6e51643b1698453be61cef8e353115a'),
+(107, '2015-11-13 12:05:01', '2016-01-19 04:38:47', 1, 'isene', '73c821aa41862e5d5eb5ba1554a83e04233ea928d2e7be1d58418be65b241b97'),
+(108, '2015-11-13 12:05:29', '2016-01-19 04:38:35', 1, 'msall', '52a80ed233204b9210ccc955e4b5e30fdb7dde79df9d7901bb84800c4ca1a41a'),
+(112, '2015-11-13 15:34:48', '2015-11-13 15:54:48', 1, 'sniang', '9c3b0357e882b8a700dadcf6d37b5b23572c1494567e55fdcce673fed5f03978'),
+(115, '2016-01-19 03:59:50', '2016-01-19 03:59:50', 1, 'weydi', '50eaa15dbc631c9bf323722c887ab7f6d7e6abf3ceb6bc778ea2741e7104ef37');
+
+
+INSERT INTO `hibernate_sequences` (`sequence_name`, `sequence_next_hi_value`) VALUES
+('user', 2);
+
+
+
+INSERT INTO `indicateur` (`id_indicateur`, `date_creation`, `date_updated`, `libelle`, `etat`, `nom_indicateur`, `unite_indicateur`) VALUES
+(1, '2015-12-10 17:39:08', '2015-12-10 17:39:08', 'Nombre d''habitant', 1, 'Population', 'habitant');
+
+
+
+INSERT INTO `localisation` (`id_localisation`, `DATE_CREATION`, `DATE_UPDATED`, `description`, `etat`, `json_form_view`, `latitude`, `longitude`, `local_nom`, `type`, `version`, `local_nom_google`, `type_localisation`, `id_parent`, `ID_USER`, `type_incident`, `gravite`, `type_site`, `nb_objets`, `nb_niveaux`, `id_responsable`, `id_createur`, `clef`, `id_zone`) VALUES
+(1, '2015-12-03 09:02:16', '2016-02-16 18:37:40', 'Hopital Dantec', 'FONCTIONNEL', NULL, '14.748323213448648', ' -17.362947463989258', 'Hopital Dantec', 'LOCATION', 11, 'N1, Dakar, Sénégal', 'BATIMENT', 2, NULL, NULL, NULL, NULL, NULL, 2, 120, NULL, 'DAK', 5),
+(2, '2016-01-02 16:06:01', '2016-02-16 17:05:50', 'Dakar plateau', 'FONCTIONNEL', NULL, '14.79922567320012', '-16.93190574645996', 'Dakar Plateau', 'PUBLIC', 5, 'Rue du Maréchal JOFFRE, Thiès, Sénégal', 'SITE', NULL, NULL, NULL, NULL, 'RESIDENCIEL', 3, NULL, 120, NULL, 'ICF', 5),
+(3, '2016-01-02 17:35:22', '2016-02-17 18:49:01', 'Sites du Radisson', 'FONCTIONNEL', NULL, '14.680803763578824', '-17.465815544128418', 'Radisson Blue', 'PUBLIC', 6, 'Route de la Corniche O, Dakar, Sénégal', 'SITE', NULL, NULL, NULL, NULL, NULL, 3, NULL, 106, NULL, 'HR', 5),
+(4, '2016-01-03 01:50:52', '2016-02-16 16:58:33', 'Site Kébémer, Sénégal', 'FONCTIONNEL', NULL, '15.37468794866489', '-16.452627182006836', 'Site Kébémer, Sénégal', 'RESIDENCIEL', 2, 'R30, Kébémer, Sénégal', 'SITE', 2, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, 'RKS', 5),
+(5, '2016-01-03 01:56:59', '2016-01-03 01:56:59', 'Batiment Bureau', 'EN_RENOVATION', NULL, '14.937265991510289', '-16.482839584350586', 'Batiment Baba Garage', 'BUREAU', 0, 'Mekhe - Bambey Rd, Baba Garage, Sénégal', 'BATIMENT', 4, NULL, NULL, NULL, NULL, NULL, 4, NULL, NULL, 'MBBG', NULL),
+(6, '2016-01-05 23:34:44', '2016-02-16 17:07:51', 'Touba Location', 'FONCTIONNEL', NULL, '14.849231237914223', '-15.89447021484375', 'Touba Location', 'BUREAU', 2, 'Unnamed Road, Touba, Sénégal', 'BATIMENT', 4, NULL, NULL, NULL, NULL, NULL, 5, 104, NULL, 'URTS', NULL),
+(7, '2016-01-15 01:50:22', '2016-01-15 01:50:22', 'Bambey Location', 'FONCTIONNEL', NULL, '15.548960445891245', '-14.578857421875', 'Bambey Location', 'PRIVE', 0, 'Linguère, Sénégal', 'SITE', 4, NULL, NULL, NULL, NULL, 12, NULL, 83, 105, 'LSS', NULL),
+(8, '2016-01-15 02:38:14', '2016-02-17 18:44:12', 'CapSkiring', 'FONCTIONNEL', NULL, '13.170422607388259', '-15.7489013671875', 'CapSkiring', 'RESIDENCIEL', 1, 'Unnamed Road, Sénégal', 'SITE', NULL, NULL, NULL, NULL, NULL, 5, NULL, 108, 83, 'URS', 8),
+(9, '2016-01-15 02:49:26', '2016-02-17 18:52:55', 'DB-PH-01', 'FONCTIONNEL', NULL, '14.024685189362192', '-14.61181640625', 'DB-PH-01', 'PUBLIC', 1, 'Unnamed Road, Sénégal', 'SITE', NULL, NULL, NULL, NULL, NULL, 6, NULL, 105, 103, 'DBH', 10),
+(10, '2016-01-15 05:39:20', '2016-02-16 17:38:25', 'Incendie Diamniadio', 'FONCTIONNEL', NULL, '16.1460921159615', '-15.52642822265625', 'Incident Diamniadio', 'INCENDIE', 6, 'Unnamed Road, Sare Lamou, Sénégal', 'INCIDENT', NULL, NULL, NULL, 'IMPACT_QOS', NULL, NULL, NULL, 102, 83, 'URSL', 4),
+(11, '2016-01-15 18:53:12', '2016-01-15 18:53:12', 'Zig Zone', 'FONCTIONNEL', NULL, '14.572360121123808', '-16.23779296875', 'Zig Road, Sénégal', 'LOCATION_VENTE', 0, 'Unnamed Road, Sénégal', 'BATIMENT', NULL, NULL, NULL, NULL, NULL, NULL, 5, 103, 83, 'ZRS', NULL),
+(12, '2016-01-19 01:57:02', '2016-01-19 01:57:02', 'Migration', 'FONCTIONNEL', NULL, '14.901142222330977', '-14.47998046875', 'Migration vers v1', 'LOCATION_VENTE', 0, 'Unnamed Road, Sénégal', 'BATIMENT', 1, NULL, NULL, NULL, NULL, NULL, 3, 108, 83, 'MVV', NULL),
+(13, '2016-01-19 14:34:05', '2016-01-19 14:34:05', 'Kaolack-Diourbel ', 'FONCTIONNEL', NULL, '14.183920149875675', '-16.072998046875', 'Kaolack-Diourbel -19-01-2016', 'LOCATION', 0, 'Kaolack-Diourbel Rd, Kaolack, Sénégal', 'BATIMENT', 6, NULL, NULL, NULL, NULL, NULL, 5, 106, 83, 'KDK', NULL),
+(14, '2016-01-20 17:49:16', '2016-01-20 17:49:16', 'Institut Culturel Colombien', 'FONCTIONNEL', NULL, '13.848747147537152', '-13.73291015625', 'Institut Culturel Colombien', 'AUTRE', 0, 'N1, Sénégal', 'SITE', 11, NULL, NULL, NULL, NULL, 2, NULL, 107, 83, 'ICC', NULL),
+(26, '2016-02-16 13:29:59', '2016-02-16 13:29:59', 'ffsdfsdf', 'FONCTIONNEL', NULL, '14.79222567320912', '-16.93490574646996', 'dfsdfsdf', 'LOCATION', 0, 'dfsdfsdf', 'BATIMENT', 2, NULL, NULL, NULL, NULL, NULL, 3, 120, NULL, 'DFS', 5),
+(27, '2016-02-16 18:38:51', '2016-02-16 18:39:43', 'SIte Bakel TSE', 'FONCTIONNEL', NULL, '14.95009216614806', '-13.458251953125', 'TSE', 'PRIVE', 1, 'N7, Sénégal', 'SITE', NULL, NULL, NULL, NULL, NULL, 3, NULL, 106, 83, 'TSE', 4);
+
+
+
+INSERT INTO `localisation_indicateur` (`id_localisation_indicateur`, `date_creation`, `date_updated`, `valeur`, `id_indicateur`, `id_localisation`) VALUES
+(1, '2015-12-10 17:39:23', '2015-12-10 17:39:23', '1000000', 1, 1);
+
+
+
+INSERT INTO `niveau` (`id_niveau`, `date_creation`, `date_updated`, `camera`, `etage`, `extincteur`, `libelle`, `superficie`, `wifi`, `id_batiment`, `etat`, `ascenseur`) VALUES
+(1, '2016-02-17 16:02:04', '2016-02-17 16:02:04', b'0', 'RDC', b'1', 'Niveau Maltik', '25', b'1', 1, NULL, b'1'),
+(2, '2016-02-17 17:04:31', '2016-02-17 17:04:31', b'1', 'ETAGE_1', b'0', 'Niveau 2', '57', b'1', 1, NULL, b'0'),
+(3, '2016-02-17 17:40:17', '2016-02-17 17:40:17', b'0', 'ETAGE_2', b'0', 'fgfdgf', '12', b'0', 1, NULL, b'0'),
+(4, '2016-02-17 17:45:08', '2016-02-17 17:45:08', b'1', 'RDC', b'1', 'BBG', '50', b'1', 5, NULL, b'0'),
+(5, '2016-02-19 18:35:04', '2016-02-19 18:35:04', b'1', 'ETAGE_3', b'1', 'Niveau Delmac2', '25', b'1', 1, NULL, b'0'),
+(6, '2016-02-20 21:03:12', '2016-02-20 21:03:12', b'1', 'RDC', b'0', 'Delmac Touba', '100', b'1', 6, NULL, b'0'),
+(7, '2016-02-20 21:05:05', '2016-02-20 21:05:05', b'1', 'ETAGE_4', b'1', 'Delmac 4', '145', b'1', 1, NULL, b'0'),
+(8, '2016-02-20 21:21:49', '2016-02-20 21:21:49', b'1', 'ETAGE_5', b'1', 'Delmac 5', '5', b'1', 1, NULL, b'1');
+
+
+
+INSERT INTO `role` (`ID_ROLE`, `DATE_CREATION`, `DATE_UPDATED`, `ROLE_NAME`, `ROLE_DESC`) VALUES
+(1, '2015-11-09 00:00:00', '2016-01-19 05:53:29', 'ROLE_ADMIN', 'administrateur'),
+(2, '2015-11-07 00:00:00', '2015-11-28 00:00:00', 'ROLE_USER', 'Utilisateur Simple'),
+(3, '2015-11-01 00:00:00', '2015-11-12 00:00:00', 'ROLE_SUPER_ADMIN', 'Super Administrateur');
+
+
+
+INSERT INTO `user` (`ID_USER`, `DATE_CREATION`, `DATE_UPDATED`, `ID_COMPTE`, `USER_LOGGED`, `USER_MAIL`, `USER_NOM`, `USER_PHONE`, `USER_PRENOM`, `adr_code_postal`, `adr_commune`, `adr_escalier`, `adr_num_etage`, `adr_libelle_voie`, `adr_num_voie`, `adr_porte`) VALUES
+(83, '2015-03-27 13:32:54', '2015-03-27 13:32:54', 84, 0, 'dysow@groupeidyal.com', 'SOW', '00221775698541', 'Diom Pathé', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(102, '2015-11-13 12:01:37', '2016-01-19 04:52:23', 103, 0, 'mosow@groupeidyal.com', 'SOW', '00221771843646', 'Mouhamadou Bamba', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(103, '2015-11-13 12:03:05', '2015-11-13 12:03:05', 104, 0, 'ddiaw@groupeidyal.com', 'DIAW', '00221770361086', 'Dame', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(104, '2015-11-13 12:03:52', '2015-11-13 12:03:52', 105, 0, 'kcisse@groupeidyal.com', 'CISSE', '00221774789541', 'khadim', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(105, '2015-11-13 12:04:30', '2015-11-13 12:04:30', 106, 0, 'athiang@groupeidyal.com', 'THIANG', '00221771133245', 'Aldjouma', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(106, '2015-11-13 12:05:01', '2016-01-20 05:25:03', 107, 0, 'isene@groupeidyal.com', 'SENE', '00221774123658', 'Ibou', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(107, '2015-11-13 12:05:29', '2015-11-13 12:05:29', 108, 0, 'msall@groupeidyal.com', 'SALL', '00221778745632', 'Massaer', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(108, '2015-11-13 15:34:48', '2015-11-13 15:54:36', 112, 0, 'sniang@groupeidyal.com', 'NIANG', '00221774785654', 'Seydou', NULL, NULL, NULL, NULL, NULL, NULL, NULL),
+(120, '2016-01-19 03:59:50', '2016-01-19 03:59:50', 115, 0, 'weydi@gmail.com', 'Weydi', '+33662384272', 'Nafyel', NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+
+INSERT INTO `user_role` (`ID_USER`, `ID_ROLE`) VALUES
+(83, 3),
+(83, 1),
+(104, 3),
+(107, 1),
+(107, 2),
+(106, 1),
+(106, 3),
+(103, 1),
+(103, 2),
+(108, 1),
+(108, 3),
+(105, 1),
+(102, 1);
+
+
+
+INSERT INTO `zone` (`id_zone`, `date_creation`, `date_updated`, `code`, `description`, `nom`, `polygone`, `version`, `couleur`) VALUES
+(4, '2015-12-29 23:25:52', '2015-12-29 23:25:52', 'MTM', 'Zone Matam', 'MATAM', '16.10784,-13.71505;16.08689,-13.48297;15.62205,-13.18496;15.49008,-12.96798;15.13374,-12.74328;14.86708,-12.59548;14.63062,-12.69539;14.52947,-12.95013;14.58236,-13.27285;14.39033,-13.51181;14.4105,-13.82492;14.64224,-14.35226;14.76529,-14.28634;15.12232,-14.55826;15.34313,-14.49543;15.37401,-14.42556;15.45784,-14.4326;15.4984,-14.2654;15.56011,-14.25201;', 0, NULL),
+(5, '2015-12-29 23:49:26', '2015-12-29 23:49:26', 'DK', 'Zone Dakar Plateau', 'Dakar', '14.89005,-17.16613;14.82866,-17.14622;14.79696,-17.1524;14.76252,-17.12391;14.5766,-17.13936;14.62686,-17.16545;14.66914,-17.20527;14.69294,-17.24132;14.7035,-17.25351;14.71141,-17.27531;14.71069,-17.28286;14.72922,-17.33093;14.74079,-17.36766;14.73707,-17.40508;14.72882,-17.42603;14.71872,-17.43375;14.7057,-17.43075;14.70318,-17.42032;14.69593,-17.42472;14.68102,-17.42074;14.67157,-17.42356;14.66685,-17.43321;14.65585,-17.43528;14.64836,-17.43632;14.66056,-17.44439;14.67674,-17.45865;14.67543,-17.47148;14.68939,-17.47652;14.69837,-17.47904;14.71348,-17.49472;14.71771,-17.50393;14.72581,-17.5058;14.73849,-17.52046;14.74054,-17.53237;14.74989,-17.52851;14.76592,-17.48233;14.76478,-17.45865;14.77442,-17.42491;14.7907,-17.38363;14.81794,-17.31205;', 0, '#ffff00'),
+(6, '2015-12-30 00:09:46', '2015-12-30 00:09:46', 'DB-PH-01', 'DB-PH-01', 'Diourbel 1', '14.6673,-15.30807;14.64022,-15.23162;14.61844,-15.11122;14.60678,-14.9693;14.69508,-14.91617;14.63251,-14.82639;14.55784,-14.61662;14.42171,-14.6228;14.30896,-14.63241;14.22283,-15.44814;14.09602,-15.5738;14.1876,-15.65002;14.23655,-15.65483;14.28016,-15.6871;14.34159,-15.67148;14.4562,-15.68882;14.52842,-15.64109;14.59308,-15.54565;14.632,-15.38772;', 0, '#0000ff'),
+(7, '2016-01-19 02:26:18', '2016-01-19 02:26:18', 'TestZone', 'TestZone', 'TestZone', '12.82654,-17.83492;12.78669,-16.95053;12.25345,-17.2966;12.20686,-17.56576;12.18146,-17.7388;', 0, '#400040'),
+(8, '2016-02-03 11:46:49', '2016-02-03 11:46:49', 'Zig-01', 'Ziguinchor Nord', 'Ziguinchor Nord', '13.15839,-15.81344;13.3367,-15.81653;13.36528,-15.69877;13.34762,-15.5841;13.39781,-15.4866;13.35923,-15.33554;13.21789,-15.34103;13.02975,-15.19786;12.85218,-15.12062;12.66823,-15.20782;12.55387,-15.42686;12.49666,-15.54187;12.40726,-15.67886;12.44122,-15.93017;12.44299,-16.23641;12.37763,-16.31263;12.35519,-16.76238;12.6857,-16.772;13.03992,-16.73217;13.18475,-16.69029;', 0, '#808000'),
+(9, '2016-02-16 19:00:14', '2016-02-16 19:00:14', 'KL', 'Zone Kaolack', 'Kaolack', '14.48389,-16.06613;14.53383,-15.83953;14.54122,-15.77774;14.44432,-15.70632;14.40983,-15.63697;14.32211,-15.52917;14.17444,-15.5381;14.09063,-15.59097;14.10746,-15.7228;14.13719,-15.78323;14.12696,-15.93978;14.14632,-16.00982;14.16035,-16.08261;14.33282,-16.02768;', 0, '#408080'),
+(10, '2016-02-16 19:05:39', '2016-02-16 19:05:39', 'KD', 'Zone Parc Niokolokoba', 'Kédougou', '13.43905,-12.24563;13.39129,-11.64688;13.09603,-11.70593;12.90276,-11.72447;12.84624,-11.79142;12.8272,-11.87484;12.67268,-12.02316;12.56097,-12.20443;12.66962,-12.28134;12.90103,-12.37335;13.07337,-12.72079;', 0, '#000000');
+
+
+
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

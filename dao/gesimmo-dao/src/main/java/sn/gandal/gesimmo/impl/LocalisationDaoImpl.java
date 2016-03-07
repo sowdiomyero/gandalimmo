@@ -6,7 +6,10 @@
 package sn.gandal.gesimmo.impl;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import org.springframework.stereotype.Repository;
@@ -15,6 +18,7 @@ import static sn.gandal.gesimmo.impl.ActiviteDaoImpl.log;
 import sn.gandal.gesimmo.modele.client.entities.Localisation;
 import sn.gandal.gesimmo.modele.client.entities.ObjetIncident;
 import sn.gandal.gesimmo.modele.client.entities.BatimentLocalite;
+import sn.gandal.gesimmo.modele.client.entities.Caracteristique;
 import sn.gandal.gesimmo.modele.client.entities.TableConfig;
 import sn.gandal.gesimmo.modele.client.entities.User;
 import sn.gandal.gesimmo.modele.client.tools.LocalisationFormFilter;
@@ -202,6 +206,26 @@ public class LocalisationDaoImpl implements ILocalisationDao {
     
   public List<Localisation> findAllLocalisations() {
      return (List<Localisation>) em.createNamedQuery(Localisation.FIND_ALL_LOCALISABLES).getResultList();   
+    }
+
+    public List<Caracteristique> findAllCaracteristiques() {
+        return em.createNamedQuery(Caracteristique.FIND_ALL_CARACTERISTIQUE, Caracteristique.class).getResultList();   
+    }
+
+    public Map<String, String> findCaracteristiquesMap() {
+        
+        Map<String, String> result =  new HashMap<String, String>();
+        for(Caracteristique c :findAllCaracteristiques()){
+            result.put(c.getIdCaracteristique().toString(), c.getNomCaracteristique());
+        }
+        return result;
+    }
+
+    public List<Caracteristique> findCaracteristiquesFromList(Long[] list) {
+        List<Long> in = Arrays.asList(list);  
+        return em.createNamedQuery(Caracteristique.FIND_CARACTERISTIQUE_IN, Caracteristique.class)
+                .setParameter("arrayIn", in)
+                .getResultList(); 
     }
 
    

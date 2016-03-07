@@ -140,8 +140,7 @@ $(document).ready(function() {
            var inp = $(v);   
            data[inp.attr("name")] = true;
         });
-        
-        
+             
         routeController.niveau.addNew(data, frm);
         
     });

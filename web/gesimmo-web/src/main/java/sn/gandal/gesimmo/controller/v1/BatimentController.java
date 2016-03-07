@@ -56,7 +56,7 @@ public class BatimentController {
             //String rattachemntParent = batimentForm.getRattachement(); //idRattachement
             String resp = batimentForm.getResponsable();  // idResponsable
             Localisation locFind  = serviceManager.getLocalisationService().getLocalisationById(idLocaliteSiteParent); // ne peut être null
-            
+        //    Long[] caract = batimentForm.get
         /** CONTROLLER LES CHAMPS RECUS POUR S'ASSURER QU'ILS SONT VALIDES **/
         
         

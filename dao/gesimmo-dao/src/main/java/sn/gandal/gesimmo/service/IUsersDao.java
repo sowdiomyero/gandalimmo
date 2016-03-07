@@ -20,7 +20,6 @@ public interface IUsersDao extends CrudRepository<User, Long> {
 
     public List<User> findAllUsers();
 
-
     public User findUserById(Long idUser);
 
     public User findUserByEmail(String userMail);

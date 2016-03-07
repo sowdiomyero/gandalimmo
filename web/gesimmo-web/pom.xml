@@ -28,7 +28,8 @@
                 <tomcat.v7.domain.password>jenkins</tomcat.v7.domain.password>
                 <tomcat.v7.domain.id>redeploy-war-file-to-tomcat-DEV</tomcat.v7.domain.id>
                 <final.name>gesimmo</final.name>
-	</properties>
+    <netbeans.hint.deploy.server>Tomcat</netbeans.hint.deploy.server>
+  </properties>
     <build>
         <finalName>gesimmo</finalName>
         <plugins>

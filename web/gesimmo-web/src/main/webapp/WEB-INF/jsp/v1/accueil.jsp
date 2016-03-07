@@ -7,7 +7,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <!--Google map begin-->
-<script src="http://maps.googleapis.com/maps/api/js?sensor=false&extension=.js&output=embed"></script> 
+<script src="http://maps.googleapis.com/maps/api/js?extension=.js&output=embed"></script> 
 <script src="${pageContext.request.contextPath}/js/cartographie.js"></script> 
 <!--Google map begin End-->
 

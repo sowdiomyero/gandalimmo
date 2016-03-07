@@ -17,7 +17,8 @@
     <mvc:resources mapping="/fonts/**" location="/resources/fonts/" />
     <mvc:resources mapping="/js/**" location="/resources/js/" />
     <mvc:resources mapping="/img/**" location="/resources/img/" />
-
+    <mvc:resources mapping="/tmp/**" location="/resources/tmp/" />
+     <mvc:resources mapping="/client/**" location="/resources/client/" />
 
 
     <bean id="viewResolver"

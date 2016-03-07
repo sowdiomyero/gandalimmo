@@ -53,6 +53,10 @@
                                 </form:select>
                                 
                                
+                                <label  for="etat">Caracteristiques : </label>
+                                <form:select style="width:100%" multiple="multiple" id="caracteristiques" path="caracteristique"  class="SlectBox form-control">                                          
+                                    <form:options items="${batimentForm.caracteristiques}" />
+                                </form:select>
 
                                 <form:input type="hidden" path ="oldResponsable" value="${localisationForm.oldResponsable}" />
                                 <form:input type="hidden" path ="idLocalisation" value="${localisationForm.idLocalisation}" />

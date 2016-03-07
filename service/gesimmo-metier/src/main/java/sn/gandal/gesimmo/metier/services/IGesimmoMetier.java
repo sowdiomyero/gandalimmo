@@ -33,21 +33,24 @@ public interface IGesimmoMetier {
     public Compte findAccountByLogin(String login);
     
     public User findUserByLogin(String login);
-
-    public boolean isUserWithEmailExist(String email);
-
-    public boolean isUserWithTelExist(String tel);
-
     public User findUserById(Long id);
+    public boolean isUserWithEmailExist(String email);
+    public boolean isUserWithTelExist(String tel);
+    public User findUserByEmail(String userMail);
+    public User findUserByIdCompte(Long idCompte);
+    public void updateUser(User user, EmailSenderImpl.TYPE_MAIL typemail);
+    public List<User> findAllUsers();
+
     
 
     public Role findRoleByName(String nameRole);
+    public Map<Long, String> findAllResponsables();
+    public Map<Long, String> findAllPrestataires();
+    //public List<Proprietaire> findAllProprietaires();
+    public Map<Long, String> findAllProprietaires();
+    
+    
 
-    public User findUserByEmail(String userMail);
-
-    public User findUserByIdCompte(Long idCompte);
-
-    public void updateUser(User user, EmailSenderImpl.TYPE_MAIL typemail);
 
     public void updateCompte(Compte compte);
 
@@ -57,10 +60,6 @@ public interface IGesimmoMetier {
 
     public String getUserNameFromEmail(String email);
 
-    public List<User> findAllUsers();
-
-    public Map<Long, String> findAllResponsables();
-    public Map<Long, String> findAllPrestataires();
 
     public List<User> findAllUsersWithoutUserConnected(String login);
 

@@ -26,7 +26,7 @@
                     <form:input name="nom" class="form-control nomLocaliteCorrige" id="nomLocaliteCorrige" required="required"  path="nom" placeholder="" />
 
                     
-
+ 
                     <c:if test="${localisationForm.dT == 'INCIDENT'}">
                         <label  for="graviteLocalisation"><spring:message code="label.localisation.tableau.header.gravite"/>: </label>
                       <%--  <form:input name="gravite"  class="form-control graviteLocalisation" id="graviteLocalisation" required="required"  path="gravite" value="${localisationForm.gravite}" /> --%>
@@ -36,46 +36,47 @@
                     </form:select>
                         
                     </c:if>
-
-<%--                    
-                        <c:if test="${localisationForm.dT == 'SITE'}">
-
-                        <label  for="nbObjetsLocalisation"><spring:message code="label.localisation.tableau.header.nbobjets"/>: </label>
-                        <form:input name="nbObjets" class="form-control graviteLocalisation" id="nbObjetsLocalisation" required="required"  path="nbObjets" value="${localisationForm.nbObjets}" />
-
-                    </c:if>    
-
-                    <c:if test="${localisationForm.dT == 'BATIMENT'}">
-                        <label  for="nbNiveauxLocalisation"><spring:message code="label.localisation.tableau.header.nbniveaux"/>: </label>
-                        <form:input name="nbNiveaux" class="form-control graviteLocalisation" id="nbNiveauxLocalisation" required="required"  path="nbNiveaux" value="${localisationForm.nbNiveaux}" />
-                    </c:if>
- --%>
-                     <label  for="typeLocalite"><spring:message code="label.localisation.tableau.header.type"/> : </label>
+                         <form:input type="hidden" path ="idLocalisation" value="${localisationForm.idLocalisation}" />
+                  
+                    <label  for="typeLocalite"><spring:message code="label.localisation.tableau.header.type"/> : </label>
                     <form:select id="typeLocalite" path="type" name="type" class="form-control">
                         <form:options items="${localisationForm.typeIncidentOuLocalite}" />
                     </form:select>
-
+     
                     <label  for="selectRattachement"><spring:message code="label.localisation.tableau.header.rattachement"/>: </label>
                     <form:select id="selectRattachement" path="rattachement" name="rattachement" class="form-control">
                         <form:option value="" label="" /> 
                         <form:options items="${localisationForm.rattachements}" itemLabel="nomLocalisable" itemValue="idLocalisation" />
                     </form:select>
-                    
+                  
                     <form:input type="hidden" path ="oldResponsable" value="${localisationForm.oldResponsable}" />
                     <form:input type="hidden" path ="oldRattachement" value="${localisationForm.oldRattachement}" />
-                    <form:input type="hidden" path ="idLocalisation" value="${localisationForm.idLocalisation}" />
-                    
+                   
+                   
                     <label  for="selectResponsable">Responsable: </label>
                     <form:select id="selectResponsable" path="responsable" name="responsableAttribution" class="form-control">
                         <form:option value="" label=""/> 
                         <form:options items="${localisationForm.listResponsables}" itemLabel="fullName"  itemValue="idUser" />
                     </form:select>
-              
-                    <label class="pull-left" for="selectZone">Zone : </label>
+                     
+                    <label  for="selectProprietaire">Proprietaire: </label>
+                    <form:select id="selectProprietaire" path="proprietaire" name="proprietaire" class="form-control">
+                        <form:option value="" label=""/> 
+                        <form:options items="${localisationForm.proprietaires}" />                           
+                    </form:select>
+             
+                    <label for="selectZone">Zone : </label>
                     <form:select id="selectZone" path="zone" title="${localisationForm.zone}" class="form-control">
                         <form:option value="" label=""/> 
                         <form:options items="${localisationForm.zones}" />
                     </form:select>
+                    
+                     <label  for="etat">Caracteristiques : </label>                                
+                    <form:select multiple="multiple" id="caracteristiques" path="caracteristique"  class="SlectBox form-control">                                          
+                        <form:options items="${localisationForm.listeCaracteristiques}" />
+                    </form:select>
+          <%--    --%>                   
+  
                 </fieldset>
             </div>
             <div class="modal-footer ">
@@ -90,4 +91,16 @@
             <!-- /.modal-dialog -->
         </div> <!-- Fin Modal Modification Fiche -->
     </div>
+    
+<script type="text/javascript">
+
+        function applyTransformation(){           
+             $('.SlectBox').SumoSelect(); 
+        };
+        
+
+        applyTransformation();
+       
+
+    </script>
 </sec:authorize>

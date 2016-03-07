@@ -1,5 +1,6 @@
 package sn.gandal.gesimmo.controller.v1;
 
+import sn.gandal.gesimmo.dto.EditLocalisationDTO;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -31,6 +32,7 @@ import sn.gandal.gesimmo.modele.client.entities.ObjetIncident;
 import sn.gandal.gesimmo.modele.client.entities.BatimentLocalite;
 import sn.gandal.gesimmo.modele.client.entities.Compte;
 import sn.gandal.gesimmo.modele.client.entities.Niveau;
+import sn.gandal.gesimmo.modele.client.entities.Proprietaire;
 import sn.gandal.gesimmo.modele.client.entities.SiteLocalite;
 import sn.gandal.gesimmo.modele.client.entities.TableConfig;
 import sn.gandal.gesimmo.modele.client.entities.User;
@@ -89,10 +91,15 @@ public class LocalisationController {
         batimmentForm.setRattachement(loc.getIdLocalisation().toString());
         batimmentForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
         batimmentForm.setResponsables(gesimmoMetier.findAllResponsables());
+        localisationForm.setProprietaires(gesimmoMetier.findAllProprietaires());
         batimmentForm.setListResponsables(gesimmoMetier.findAllUsers());
         batimmentForm.setZones(serviceManager.getZoneService().getAllZones());
         batimmentForm.setTypesBatiment(BatimentLocalite.getAllTypes());
         batimmentForm.setEtatsBatiment(Localisation.getAllEtats());
+        
+        batimmentForm.setCaracteristiques(serviceManager.getLocalisationService().findCaracteristiquesMap());
+        batimmentForm.setCaracteristique(loc.getCaracteristiquesTab());       
+        
         model.addAttribute("batimentForm", batimmentForm);
         
         NiveauForm niveauForm =  new NiveauForm();
@@ -100,6 +107,8 @@ public class LocalisationController {
           BatimentLocalite batm=  (BatimentLocalite) loc;
           niveauForm.setLevels( batm.exclureNiveauxSaisis());
           niveauForm.setEtats( Niveau.getEtatCollection());
+          
+          
         }
         model.addAttribute("niveauForm",niveauForm);
         }else{
@@ -131,78 +140,7 @@ public class LocalisationController {
         return "localisation/list";
     }
 
-    @RequestMapping(value = "/filtrer", method = RequestMethod.GET)
-    public String getLocalisationListFiltered(Model model,
-            @RequestParam(value = "objetSaisi") String dtype,
-            @RequestParam(value = "zoneSaisi") String zone,
-            @RequestParam(value = "etatSaisi") String etat
-    ) {
 
-        List<Localisation> allLocalites = localisationMetier.findAllLocalisations();
-        if (dtype != null && !dtype.equalsIgnoreCase("ALL")) {
-            allLocalites = filterLocalite(allLocalites, "DTYPE", dtype);
-        }
-        if (zone != null && !zone.equalsIgnoreCase("ALL")) {
-            allLocalites = filterLocalite(allLocalites, "ZONE", zone);
-        }
-        if (etat != null && !etat.equalsIgnoreCase("ALL")) {
-            allLocalites = filterLocalite(allLocalites, "ETAT", etat);
-        }
-
-        model.addAttribute("localisations", allLocalites);
-        if (allLocalites.size() > 0) {
-            model.addAttribute("localisationSelected", allLocalites.get(0));
-            EditLocalisationForm localisationForm = helper.getCompletedLocalisationForm(allLocalites.get(0), serviceManager);
-                        
-            BatimentForm batimmentForm = new BatimentForm();
-            Localisation loc =allLocalites.get(0);
-            batimmentForm.setIdLocalisation(loc.getIdLocalisation());
-            batimmentForm.setLongitude(loc.getLongitude());
-            batimmentForm.setLatitude(loc.getLatitude());
-            batimmentForm.setZone(loc.getZone() != null ? loc.getZone().getIdZone().toString(): "");
-            batimmentForm.setRattachement(loc.getIdLocalisation().toString());
-            batimmentForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
-            batimmentForm.setResponsable(loc.getAttribution()!= null ? loc.getAttribution().toString():"");
-            batimmentForm.setResponsables(gesimmoMetier.findAllResponsables());
-            batimmentForm.setListResponsables(gesimmoMetier.findAllUsers());
-            batimmentForm.setZones(serviceManager.getZoneService().getAllZones());
-            batimmentForm.setTypesBatiment(BatimentLocalite.getAllTypes());
-            batimmentForm.setEtatsBatiment(Localisation.getAllEtats()); 
-            
-            model.addAttribute("localisationForm", localisationForm); 
-            model.addAttribute("batimentForm", batimmentForm);
-            
-            NiveauForm niveauForm =  new NiveauForm();
-            if(loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
-              BatimentLocalite batm=  (BatimentLocalite) loc;
-                niveauForm.setLevels( batm.exclureNiveauxSaisis());
-                 niveauForm.setEtats( Niveau.getEtatCollection());
-            }
-            model.addAttribute("niveauForm", niveauForm);
-        } else {
-            model.addAttribute("localisationForm", null);
-            model.addAttribute("localisationSelected", null);
-            model.addAttribute("batimentForm", null);
-            model.addAttribute("niveauForm", null);
-        }
-
-        /**
-         * *********************
-         */
-        FilterLocalisationForm filterLocalisationForm;
-        filterLocalisationForm = new FilterLocalisationForm();
-        filterLocalisationForm.populateEtatsList(Arrays.asList(Localisation.ETAT.values()));
-        filterLocalisationForm.setEtatSaisi(etat);
-        filterLocalisationForm.setZones(serviceManager.getZoneService().getAllZones());
-        filterLocalisationForm.setZoneSaisi(zone);
-        filterLocalisationForm.setObjets(gesimmoMetier.getTypeLicenceLocalite());
-        filterLocalisationForm.setObjetSaisi(dtype);
-        model.addAttribute("filterLocalisationForm", filterLocalisationForm);
-
-        //getCurrentUserName();
-        
-        return "localisation/list";
-    }
 
     //TODO ne pas utiliser l'entité au niveau de la couche web
     @RequestMapping(value = "view/{id}", method = RequestMethod.GET)
@@ -230,15 +168,22 @@ public class LocalisationController {
         batimmentForm.setZones(serviceManager.getZoneService().getAllZones());
         batimmentForm.setTypesBatiment(BatimentLocalite.getAllTypes());
         batimmentForm.setEtatsBatiment(Localisation.getAllEtats());
+        
+        batimmentForm.setCaracteristiques(serviceManager.getLocalisationService().findCaracteristiquesMap());
+        batimmentForm.setCaracteristique(loc.getCaracteristiquesTab());       
+        
+        
         model.addAttribute("batimentForm", batimmentForm);
-
         model.addAttribute("responsables", gesimmoMetier.findAllResponsables());
+        model.addAttribute("proprietaires", gesimmoMetier.findAllProprietaires());
         
         NiveauForm niveauForm =  new NiveauForm();
             if(loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
               BatimentLocalite batm=  (BatimentLocalite) loc;
                 niveauForm.setLevels( batm.exclureNiveauxSaisis());
-                 niveauForm.setEtats( Niveau.getEtatCollection());
+                niveauForm.setEtats( Niveau.getEtatCollection());
+                niveauForm.setListeCaracteristiques(serviceManager.getLocalisationService().findCaracteristiquesMap());
+                niveauForm.setCaracteristique(batm.getCaracteristiquesTab());
             }
         model.addAttribute("niveauForm", niveauForm);
         
@@ -308,7 +253,7 @@ public class LocalisationController {
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
     public @ResponseBody
-    EditLocalisationForm editLolcalisation(@RequestBody @Valid EditLocalisationForm editLocaliteForm, HttpServletRequest request) {
+    EditLocalisationDTO editLolcalisation(@RequestBody @Valid EditLocalisationDTO editLocaliteForm, HttpServletRequest request) {
 
         Long idLocalisation = editLocaliteForm.getIdLocalisation();
 
@@ -334,156 +279,8 @@ public class LocalisationController {
         return editLocaliteForm;
 
     }
-
-    @RequestMapping(value = "/affecterResponsable", method = RequestMethod.POST)
-    public @ResponseBody
-    EditUserForm affecterResponsableLolcalisation(@RequestBody @Valid EditUserForm editUserForm, HttpServletRequest request) {
-
-        User responsable = gesimmoMetier.findUserById(editUserForm.getIdUser());
-        Localisation localisation = localisationMetier.getLocalisationById(idLocalisationSaisi);
-        localisation.setUser(responsable);
-        localisationMetier.updateLocalisation(localisation);
-
-        editUserForm.setMsg("Modification passée  avec succés");
-        editUserForm.setResultat(Subscriber.RETOUR_OK);
-        return editUserForm;
-
-    }
-
-    @RequestMapping(value = "/ficheLocalisation", method = RequestMethod.GET)
-    String showFicheUser(Model model, @RequestParam(value = "idLocalisation") Long idLocalisation, @RequestParam(value = "dtype") String dtype) {
-        try {
-
-            if (dtype.equals(TableConfig.DTYPE_LOCALITE)) {
-                BatimentLocalite localisation = (BatimentLocalite) localisationMetier.getLocalisationById(idLocalisation);
-                idLocalisationSaisi = idLocalisation;
-                EditLocalisationForm editLocalisationForm = new EditLocalisationForm();
-                editLocalisationForm.setIdLocalisation(idLocalisation);
-                editLocalisationForm.setDateCreation(localisation.getDateCreation().toString());
-                editLocalisationForm.setDateUpdated(localisation.getDateUpdated().toString());
-                editLocalisationForm.setDescription(localisation.getDescription());
-                editLocalisationForm.setLatitude(localisation.getLatitude());
-                editLocalisationForm.setLongitude(localisation.getLongitude());
-                editLocalisationForm.setNom(localisation.getNomLocalisable());
-                editLocalisationForm.setType(localisation.getTypeToString());
-                List<Indicateur> mesinIndicateurs = new ArrayList<Indicateur>();
-                List<LocalisationIndicateur> lis = IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation);
-                for (LocalisationIndicateur loin : lis) {
-                    mesinIndicateurs.add(loin.getIndicateur());
-                }
-                List<Indicateur> inds = IndicateurMetier.findAllIndicateurByEtat(ParamEntity.ETAT_ACTIVE);
-                List<Indicateur> otherInds = IndicateurMetier.supprimerIndicateurDansList(inds, mesinIndicateurs);
-                //editLocalisationForm.setIdResponsable(localisation.getUser().getIdUser());
-                model.addAttribute("indicateurs", otherInds);
-
-                model.addAttribute("editLocalisationForm", editLocalisationForm);
-                /*-----------------------Responsable----------------------------*/
-                User responsable = localisation.getUser();
-                model.addAttribute("users", gesimmoMetier.findUSersByEtat(ParamEntity.ETAT_ACTIVE));
-                if (responsable == null) {
-                    model.addAttribute("editUserForm", new EditUserForm());
-                } else {
-                    EditUserForm editUserForm = new EditUserForm();
-                    editUserForm.setIdUser(responsable.getIdUser());
-                    editUserForm.setDateCreation(responsable.getDateCreation().toString());
-                    editUserForm.setDateUpdated(responsable.getDateUpdated().toString());
-                    editUserForm.setNom(responsable.getUserName());
-                    editUserForm.setPrenom(responsable.getUserPrenom());
-                    editUserForm.setEmail(responsable.getUserMail());
-                    editUserForm.setLogin(responsable.getCompte().getLogin());
-                    editUserForm.setTelephone(responsable.getUserPhone());
-                    model.addAttribute("editUserForm", editUserForm);
-
-                }
-                /*-----------------------Projets de la localite----------------------------*/
-                List<Activite> projets = new ArrayList<Activite>();
-                for (Activite activite : localisation.getActivites()) {
-                    if (activite.getType().equalsIgnoreCase(ParamEntity.ACTIVITE_TYPE_PROJET) && activite.getEtat() == ParamEntity.ETAT_ACTIVE) {
-                        projets.add(activite);
-                    }
-                }
-                ProjetForm projetForm = new ProjetForm();
-                projetForm.setNomActivite("nomActivite");
-                model.addAttribute("projetForm", projetForm);
-                model.addAttribute("projets", projets);
-                /*-----------------------l'ensemble des projets----------------------------*/
-                model.addAttribute("projetList", projetMetier.getAllProjets());
-
-                /*-----------------------Indicateur de la localite----------------------------*/
-                model.addAttribute("indicateursLocalisation", IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation));
-                LOG.info("++++++++++++++++++++++++++++" + IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation).size());
-            }
-
-            if (dtype.equals(TableConfig.DTYPE_INCIDENT)) {
-                ObjetIncident localisation = (ObjetIncident) localisationMetier.getLocalisationById(idLocalisation);
-                idLocalisationSaisi = idLocalisation;
-                EditLocalisationForm editLocalisationForm = new EditLocalisationForm();
-                editLocalisationForm.setIdLocalisation(idLocalisation);
-                editLocalisationForm.setDateCreation(localisation.getDateCreation().toString());
-                editLocalisationForm.setDateUpdated(localisation.getDateUpdated().toString());
-                editLocalisationForm.setDescription(localisation.getDescription());
-                editLocalisationForm.setLatitude(localisation.getLatitude());
-                editLocalisationForm.setLongitude(localisation.getLongitude());
-                editLocalisationForm.setNom(localisation.getNomLocalisable());
-                editLocalisationForm.setType(localisation.getTypeToString());
-                List<Indicateur> mesinIndicateurs = new ArrayList<Indicateur>();
-                List<LocalisationIndicateur> lis = IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation);
-                for (LocalisationIndicateur loin : lis) {
-                    mesinIndicateurs.add(loin.getIndicateur());
-                }
-                List<Indicateur> inds = IndicateurMetier.findAllIndicateurByEtat(ParamEntity.ETAT_ACTIVE);
-                List<Indicateur> otherInds = IndicateurMetier.supprimerIndicateurDansList(inds, mesinIndicateurs);
-                //editLocalisationForm.setIdResponsable(localisation.getUser().getIdUser());
-                model.addAttribute("indicateurs", otherInds);
-
-                model.addAttribute("editLocalisationForm", editLocalisationForm);
-                /*-----------------------Responsable----------------------------*/
-                User responsable = localisation.getUser();
-                model.addAttribute("users", gesimmoMetier.findUSersByEtat(ParamEntity.ETAT_ACTIVE));
-                if (responsable == null) {
-                    model.addAttribute("editUserForm", new EditUserForm());
-                } else {
-                    EditUserForm editUserForm = new EditUserForm();
-                    editUserForm.setIdUser(responsable.getIdUser());
-                    editUserForm.setDateCreation(responsable.getDateCreation().toString());
-                    editUserForm.setDateUpdated(responsable.getDateUpdated().toString());
-                    editUserForm.setNom(responsable.getUserName());
-                    editUserForm.setPrenom(responsable.getUserPrenom());
-                    editUserForm.setEmail(responsable.getUserMail());
-                    editUserForm.setLogin(responsable.getCompte().getLogin());
-                    editUserForm.setTelephone(responsable.getUserPhone());
-                    model.addAttribute("editUserForm", editUserForm);
-
-                }
-                /*-----------------------Projets de la localite----------------------------*/
-                List<Activite> projets = new ArrayList<Activite>();
-                for (Activite activite : localisation.getActivites()) {
-                    if (activite.getType().equalsIgnoreCase(ParamEntity.ACTIVITE_TYPE_PROJET) && activite.getEtat() == ParamEntity.ETAT_ACTIVE) {
-                        projets.add(activite);
-                    }
-                }
-                ProjetForm projetForm = new ProjetForm();
-                projetForm.setNomActivite("nomActivite");
-                model.addAttribute("projetForm", projetForm);
-                model.addAttribute("projets", projets);
-                /*-----------------------l'ensemble des projets----------------------------*/
-                model.addAttribute("projetList", projetMetier.getAllProjets());
-
-                model.addAttribute("localisationForm", editLocalisationForm);
-                /*-----------------------Indicateur de la localite----------------------------*/
-                model.addAttribute("indicateursLocalisation", IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation));
-                LOG.info("++++++++++++++++++++++++++++" + IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation).size());
-            }
-
-        } catch (Exception e) {
-            System.out.println("Exception : " + e.getMessage());
-        } finally {
-            return "ficheLocalisation";
-        }
-
-    }
-
-    @RequestMapping(value = "/new", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    
+     @RequestMapping(value = "/new", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public @ResponseBody
     EditLocalisationForm addLocalisation(@RequestBody EditLocalisationForm localisationForm, HttpServletRequest request, Model m) {
         /* ENREGISTREMENT DES DONNEES DANS LA BASE */
@@ -498,7 +295,7 @@ public class LocalisationController {
             String longitude = gps[1];
             String Ratt = localisationForm.getRattachement();
             String resp = localisationForm.getResponsable();
-
+            String proprio = localisationForm.getProprietaire();
             String zone = localisationForm.getZone();
 
             String userName = getCurrentUserName();
@@ -534,6 +331,17 @@ public class LocalisationController {
                 createur = cpt.getUser();
 
             }
+            
+            Proprietaire proprietaire = null;
+            if (proprio != null && !proprio.equals("")) {
+                try {
+                    Long idProprio = Long.parseLong(proprio);
+                    proprietaire = (Proprietaire) gesimmoMetier.findEntityById(idProprio, Proprietaire.class);
+                } catch (Exception ex) {
+                    LOG.severe("On a tenté d'ajouter un proprietaire de ben immobilier avec un ID inconnu : ID : " + proprio);
+                }
+
+            }
 
             if (dtype.equals(TableConfig.DTYPE_BATIMENT)) {
                 BatimentLocalite localisation = new BatimentLocalite();
@@ -546,6 +354,7 @@ public class LocalisationController {
                 localisation.setParentLocalisation(locFind);
                 localisation.setCreateur(createur);
                 localisation.setAttribution(responsable);
+                localisation.setProprietaire(proprietaire);
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
                // localisation.setNbNiveaux(Integer.parseInt(localisationForm.getNbNiveaux()));
@@ -567,6 +376,7 @@ public class LocalisationController {
                 localisation.setParentLocalisation(locFind);
                 localisation.setCreateur(createur);
                 localisation.setAttribution(responsable);
+                localisation.setProprietaire(proprietaire);
                 localisation.setGravite(localisationForm.getGravite());
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
@@ -588,6 +398,7 @@ public class LocalisationController {
                 localisation.setParentLocalisation(locFind);
                 localisation.setCreateur(createur);
                 localisation.setAttribution(responsable);
+                localisation.setProprietaire(proprietaire);
                 //localisation.setNbObjets(Integer.parseInt(localisationForm.getNbObjets()));
                 localisation.setType(localisationForm.getType());
                 localisation.setEtat(Localisation.ETAT.FONCTIONNEL);
@@ -601,6 +412,8 @@ public class LocalisationController {
             }
 
         } catch (Exception ex) {
+            LOG.log(Level.SEVERE, ex.getMessage());
+            ex.printStackTrace();
             localisationForm.setResultat(localisationForm.RETOUR_EXCEPTION);
             localisationForm.setMsg("Une erreur est survenue pendant le traitement!! " + ex);
         } finally {
@@ -648,6 +461,7 @@ public class LocalisationController {
         locs.addAll(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
         localisationForm.setRattachements(locs);
         localisationForm.setResponsables(gesimmoMetier.findAllResponsables());
+        localisationForm.setProprietaires(gesimmoMetier.findAllProprietaires());
         localisationForm.setZones(serviceManager.getZoneService().getAllZones());
 
         List<String> licencesObjetType = gesimmoMetier.getTypeLicenceLocalite();
@@ -699,6 +513,7 @@ public class LocalisationController {
         locs.addAll(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
         localisationForm.setRattachements(locs);
         localisationForm.setResponsables(gesimmoMetier.findAllResponsables());
+        localisationForm.setProprietaires(gesimmoMetier.findAllProprietaires());
         localisationForm.setZones(serviceManager.getZoneService().getAllZones());
         localisationForm.setTypeIncidentOuLocalite(getTypeOfDtypeElements(type));
         localisationForm.setdType(licencesObjetType);
@@ -709,19 +524,82 @@ public class LocalisationController {
 
     }
 
-//    @RequestMapping(value = "localisationListFilter/load/localite/categorie", method = RequestMethod.GET)
-//    public String getLocaliteFormBy(Model model, @RequestParam(value = "categorie") String categorie) {
-//        LocalisationFormFilter localisationFormFilter = new LocalisationFormFilter();
-//        localisationFormFilter.setdT(categorie);
-//        LOG.info("***************************categorie:" + categorie + " ****************************");
-//        localisationFormFilter.setdType(gesimmoMetier.getTypeLicenceLocalite());
-//        localisationFormFilter.setTypeIncidentOuLocalite(getTypeOfDtypeElements(categorie));
-//        localisationFormFilter.getTypeIncidentOuLocalite().add("ALL");
-//        model.addAttribute("localisationFormFilter", localisationFormFilter);
-//
-//        return "fragment/menu_localisation";
-//
-//    }
+        @RequestMapping(value = "/filtrer", method = RequestMethod.GET)
+    public String getLocalisationListFiltered(Model model,
+            @RequestParam(value = "objetSaisi") String dtype,
+            @RequestParam(value = "zoneSaisi") String zone,
+            @RequestParam(value = "etatSaisi") String etat
+    ) {
+
+        List<Localisation> allLocalites = localisationMetier.findAllLocalisations();
+        if (dtype != null && !dtype.equalsIgnoreCase("ALL")) {
+            allLocalites = filterLocalite(allLocalites, "DTYPE", dtype);
+        }
+        if (zone != null && !zone.equalsIgnoreCase("ALL")) {
+            allLocalites = filterLocalite(allLocalites, "ZONE", zone);
+        }
+        if (etat != null && !etat.equalsIgnoreCase("ALL")) {
+            allLocalites = filterLocalite(allLocalites, "ETAT", etat);
+        }
+
+        model.addAttribute("localisations", allLocalites);
+        if (allLocalites.size() > 0) {
+            model.addAttribute("localisationSelected", allLocalites.get(0));
+            EditLocalisationForm localisationForm = helper.getCompletedLocalisationForm(allLocalites.get(0), serviceManager);
+                        
+            BatimentForm batimmentForm = new BatimentForm();
+            Localisation loc =allLocalites.get(0);
+            batimmentForm.setIdLocalisation(loc.getIdLocalisation());
+            batimmentForm.setLongitude(loc.getLongitude());
+            batimmentForm.setLatitude(loc.getLatitude());
+            batimmentForm.setZone(loc.getZone() != null ? loc.getZone().getIdZone().toString(): "");
+            batimmentForm.setRattachement(loc.getIdLocalisation().toString());
+            batimmentForm.setRattachements(localisationMetier.findAllLocalisationByEtat(Localisation.ETAT.FONCTIONNEL));
+            batimmentForm.setResponsable(loc.getAttribution()!= null ? loc.getAttribution().toString():"");
+            batimmentForm.setResponsables(gesimmoMetier.findAllResponsables());
+            batimmentForm.setListResponsables(gesimmoMetier.findAllUsers());
+            batimmentForm.setZones(serviceManager.getZoneService().getAllZones());
+            batimmentForm.setTypesBatiment(BatimentLocalite.getAllTypes());
+            batimmentForm.setEtatsBatiment(Localisation.getAllEtats()); 
+                batimmentForm.setCaracteristiques(serviceManager.getLocalisationService().findCaracteristiquesMap());
+                batimmentForm.setCaracteristique(loc.getCaracteristiquesTab());
+            model.addAttribute("localisationForm", localisationForm); 
+            model.addAttribute("batimentForm", batimmentForm);
+            
+            NiveauForm niveauForm =  new NiveauForm();
+            if(loc.getDType().equalsIgnoreCase(TableConfig.DTYPE_BATIMENT)){
+                 BatimentLocalite batm=  (BatimentLocalite) loc;
+                 niveauForm.setLevels( batm.exclureNiveauxSaisis());
+                 niveauForm.setEtats( Niveau.getEtatCollection());
+                 niveauForm.setListeCaracteristiques(serviceManager.getLocalisationService().findCaracteristiquesMap());
+                 niveauForm.setCaracteristique(batm.getCaracteristiquesTab());
+            }
+            model.addAttribute("niveauForm", niveauForm);
+        } else {
+            model.addAttribute("localisationForm", null);
+            model.addAttribute("localisationSelected", null);
+            model.addAttribute("batimentForm", null);
+            model.addAttribute("niveauForm", null);
+        }
+
+        /**
+         * *********************
+         */
+        FilterLocalisationForm filterLocalisationForm;
+        filterLocalisationForm = new FilterLocalisationForm();
+        filterLocalisationForm.populateEtatsList(Arrays.asList(Localisation.ETAT.values()));
+        filterLocalisationForm.setEtatSaisi(etat);
+        filterLocalisationForm.setZones(serviceManager.getZoneService().getAllZones());
+        filterLocalisationForm.setZoneSaisi(zone);
+        filterLocalisationForm.setObjets(gesimmoMetier.getTypeLicenceLocalite());
+        filterLocalisationForm.setObjetSaisi(dtype);
+        model.addAttribute("filterLocalisationForm", filterLocalisationForm);
+
+        //getCurrentUserName();
+        
+        return "localisation/list";
+    }
+
     private List<String> getTypeOfDtypeElements(String categorie) {
         if (categorie.equals(TableConfig.DTYPE_BATIMENT)) {
             return BatimentLocalite.getAllTypes();
@@ -743,6 +621,7 @@ public class LocalisationController {
         response.setResultat(BasicResponse.RETOUR_ID_INVALID);
         if (!localisationMetier.isKeyExist(key)) {
             response.setResultat(BasicResponse.RETOUR_OK);
+            response.setMsg("Clef VALIDE");
         }
         return response;
 
@@ -754,54 +633,78 @@ public class LocalisationController {
         return userName;
     }
 
-    private void setDefaultParams(Localisation currentLocalisation, EditLocalisationForm editLocaliteForm) {
+    private void setDefaultParams(Localisation currentLocalisation, EditLocalisationDTO editLocaliteForm) {
         currentLocalisation.setNomLocalisable(editLocaliteForm.getNom());
-        //String nom = editLocaliteForm.getNom();
-        //String desc = editLocaliteForm.getDescription();
+        String nom = editLocaliteForm.getNom();
+        String desc = editLocaliteForm.getDescription();
         currentLocalisation.setDescription(editLocaliteForm.getDescription());
         currentLocalisation.setType(editLocaliteForm.getType());
-        //String type = editLocaliteForm.getType();
+        currentLocalisation.setCaracteristiques(serviceManager.getLocalisationService().findCaracteristiquesFromList(editLocaliteForm.getCaracteristique()));
+        String type = editLocaliteForm.getType();
         String gravite = editLocaliteForm.getGravite();
         //currentLocalisation.set
-        String oldRattachementId = editLocaliteForm.getOldRattachement();
-        String rattachementId = editLocaliteForm.getRattachement();
+        Long oldRattachementId = editLocaliteForm.getOldRattachement();
+        Long rattachementId = editLocaliteForm.getRattachement();
 
-        String oldResponsableId = editLocaliteForm.getOldResponsable();
-        String responsableId = editLocaliteForm.getResponsable();
+        Long oldResponsableId = editLocaliteForm.getOldResponsable();
+        Long responsableId = editLocaliteForm.getResponsable();
+        Long proprietaireId = editLocaliteForm.getProprietaire();
+        Long oldProprietaireId = editLocaliteForm.getOldProprietaire();
 
-        String oldZoneId = editLocaliteForm.getOldZone();
-        String zoneId = editLocaliteForm.getZone();
+        Long oldZoneId = editLocaliteForm.getOldZone();
+        Long zoneId = editLocaliteForm.getZone();
 
         User attribution = null;
         Localisation rattachement = null;
+        Proprietaire proprietaire = null;
         Zone zone = null;
 
-        if (rattachementId != null && !rattachementId.equals("")) {
-            if (!oldRattachementId.equalsIgnoreCase(rattachementId)) {
+        if (rattachementId != null) {
+            if (oldRattachementId != rattachementId) {
                 rattachement = localisationMetier.getLocalisationById(Long.valueOf(rattachementId));
                 currentLocalisation.setParentLocalisation(rattachement);
             }
+        }else if(rattachementId == null){
+            //cas changement ==> suppression du rattachement
+            currentLocalisation.setParentLocalisation(null);
+        }else{
+            LOG.log(Level.WARNING, "Aucun test ne correspond sur le rattachement de l'objet localisable à son parent");
         }
+        
+        //TODO applique les conditions en cas de modification à null pour les autres attributs
         // dans le cas d'une suppression du rattachement
-        if(rattachementId != null && rattachementId.equalsIgnoreCase("")){
-            if(oldRattachementId != null && !oldRattachementId.equalsIgnoreCase("")){
+        if(rattachementId != null ){
+            if(oldRattachementId != null ){
                 currentLocalisation.setParentLocalisation(null);
             }
         }
 
-        if (responsableId != null && !responsableId.equals("")) {
-            if (!oldResponsableId.equalsIgnoreCase(responsableId)) {
+        if (responsableId != null) {
+            if (oldResponsableId != responsableId) {
                 attribution = gesimmoMetier.findUserById(Long.valueOf(responsableId));
                 currentLocalisation.setAttribution(attribution);
-            }
-        }
+            } 
+        }else {               
+           currentLocalisation.setAttribution(null);
+       }
 
-        if (zoneId != null && !zoneId.equals("")) {
-            if (oldZoneId == null || !oldZoneId.equalsIgnoreCase(zoneId)) {
+        if (zoneId != null) {
+            if ( oldZoneId != zoneId) {
                 zone = (Zone) gesimmoMetier.findEntityById(Long.valueOf(zoneId), Zone.class);
                 currentLocalisation.setZone(zone);
             }
+        }else{
+            currentLocalisation.setZone(null);
         }
+        
+         if (proprietaireId != null ) { 
+                if ((oldProprietaireId != proprietaireId) ) { 
+                    proprietaire = (Proprietaire) gesimmoMetier.findEntityById(Long.valueOf(proprietaireId), Proprietaire.class);                
+                    currentLocalisation.setProprietaire(proprietaire);
+                }
+        } else{ 
+             currentLocalisation.setProprietaire(null);             
+         }
     }
 
     private List<Localisation> filterLocalite(List<Localisation> allLocalites, String type, String value) {
@@ -832,4 +735,168 @@ public class LocalisationController {
         }
         return allLocalites;
     }
+    
+    //    @RequestMapping(value = "localisationListFilter/load/localite/categorie", method = RequestMethod.GET)
+//    public String getLocaliteFormBy(Model model, @RequestParam(value = "categorie") String categorie) {
+//        LocalisationFormFilter localisationFormFilter = new LocalisationFormFilter();
+//        localisationFormFilter.setdT(categorie);
+//        LOG.info("***************************categorie:" + categorie + " ****************************");
+//        localisationFormFilter.setdType(gesimmoMetier.getTypeLicenceLocalite());
+//        localisationFormFilter.setTypeIncidentOuLocalite(getTypeOfDtypeElements(categorie));
+//        localisationFormFilter.getTypeIncidentOuLocalite().add("ALL");
+//        model.addAttribute("localisationFormFilter", localisationFormFilter);
+//
+//        return "fragment/menu_localisation";
+//
+//    }
+
+//    @RequestMapping(value = "/affecterResponsable", method = RequestMethod.POST)
+//    public @ResponseBody
+//    EditUserForm affecterResponsableLolcalisation(@RequestBody @Valid EditUserForm editUserForm, HttpServletRequest request) {
+//
+//        User responsable = gesimmoMetier.findUserById(editUserForm.getIdUser());
+//        Localisation localisation = localisationMetier.getLocalisationById(idLocalisationSaisi);
+//        localisation.setUser(responsable);
+//        localisationMetier.updateLocalisation(localisation);
+//
+//        editUserForm.setMsg("Modification passée  avec succés");
+//        editUserForm.setResultat(Subscriber.RETOUR_OK);
+//        return editUserForm;
+//
+//    }
+//
+//    @RequestMapping(value = "/ficheLocalisation", method = RequestMethod.GET)
+//    String showFicheUser(Model model, @RequestParam(value = "idLocalisation") Long idLocalisation, @RequestParam(value = "dtype") String dtype) {
+//        try {
+//
+//            if (dtype.equals(TableConfig.DTYPE_LOCALITE)) {
+//                BatimentLocalite localisation = (BatimentLocalite) localisationMetier.getLocalisationById(idLocalisation);
+//                idLocalisationSaisi = idLocalisation;
+//                EditLocalisationForm editLocalisationForm = new EditLocalisationForm();
+//                editLocalisationForm.setIdLocalisation(idLocalisation);
+//                editLocalisationForm.setDateCreation(localisation.getDateCreation().toString());
+//                editLocalisationForm.setDateUpdated(localisation.getDateUpdated().toString());
+//                editLocalisationForm.setDescription(localisation.getDescription());
+//                editLocalisationForm.setLatitude(localisation.getLatitude());
+//                editLocalisationForm.setLongitude(localisation.getLongitude());
+//                editLocalisationForm.setNom(localisation.getNomLocalisable());
+//                editLocalisationForm.setType(localisation.getTypeToString());
+//                List<Indicateur> mesinIndicateurs = new ArrayList<Indicateur>();
+//                List<LocalisationIndicateur> lis = IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation);
+//                for (LocalisationIndicateur loin : lis) {
+//                    mesinIndicateurs.add(loin.getIndicateur());
+//                }
+//                List<Indicateur> inds = IndicateurMetier.findAllIndicateurByEtat(ParamEntity.ETAT_ACTIVE);
+//                List<Indicateur> otherInds = IndicateurMetier.supprimerIndicateurDansList(inds, mesinIndicateurs);
+//                //editLocalisationForm.setIdResponsable(localisation.getUser().getIdUser());
+//                model.addAttribute("indicateurs", otherInds);
+//
+//                model.addAttribute("editLocalisationForm", editLocalisationForm);
+//                /*-----------------------Responsable----------------------------*/
+//                User responsable = localisation.getUser();
+//                model.addAttribute("users", gesimmoMetier.findUSersByEtat(ParamEntity.ETAT_ACTIVE));
+//                if (responsable == null) {
+//                    model.addAttribute("editUserForm", new EditUserForm());
+//                } else {
+//                    EditUserForm editUserForm = new EditUserForm();
+//                    editUserForm.setIdUser(responsable.getIdUser());
+//                    editUserForm.setDateCreation(responsable.getDateCreation().toString());
+//                    editUserForm.setDateUpdated(responsable.getDateUpdated().toString());
+//                    editUserForm.setNom(responsable.getUserName());
+//                    editUserForm.setPrenom(responsable.getUserPrenom());
+//                    editUserForm.setEmail(responsable.getUserMail());
+//                    editUserForm.setLogin(responsable.getCompte().getLogin());
+//                    editUserForm.setTelephone(responsable.getUserPhone());
+//                    model.addAttribute("editUserForm", editUserForm);
+//
+//                }
+//                /*-----------------------Projets de la localite----------------------------*/
+//                List<Activite> projets = new ArrayList<Activite>();
+//                for (Activite activite : localisation.getActivites()) {
+//                    if (activite.getType().equalsIgnoreCase(ParamEntity.ACTIVITE_TYPE_PROJET) && activite.getEtat() == ParamEntity.ETAT_ACTIVE) {
+//                        projets.add(activite);
+//                    }
+//                }
+//                ProjetForm projetForm = new ProjetForm();
+//                projetForm.setNomActivite("nomActivite");
+//                model.addAttribute("projetForm", projetForm);
+//                model.addAttribute("projets", projets);
+//                /*-----------------------l'ensemble des projets----------------------------*/
+//                model.addAttribute("projetList", projetMetier.getAllProjets());
+//
+//                /*-----------------------Indicateur de la localite----------------------------*/
+//                model.addAttribute("indicateursLocalisation", IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation));
+//                LOG.info("++++++++++++++++++++++++++++" + IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation).size());
+//            }
+//
+//            if (dtype.equals(TableConfig.DTYPE_INCIDENT)) {
+//                ObjetIncident localisation = (ObjetIncident) localisationMetier.getLocalisationById(idLocalisation);
+//                idLocalisationSaisi = idLocalisation;
+//                EditLocalisationForm editLocalisationForm = new EditLocalisationForm();
+//                editLocalisationForm.setIdLocalisation(idLocalisation);
+//                editLocalisationForm.setDateCreation(localisation.getDateCreation().toString());
+//                editLocalisationForm.setDateUpdated(localisation.getDateUpdated().toString());
+//                editLocalisationForm.setDescription(localisation.getDescription());
+//                editLocalisationForm.setLatitude(localisation.getLatitude());
+//                editLocalisationForm.setLongitude(localisation.getLongitude());
+//                editLocalisationForm.setNom(localisation.getNomLocalisable());
+//                editLocalisationForm.setType(localisation.getTypeToString());
+//                List<Indicateur> mesinIndicateurs = new ArrayList<Indicateur>();
+//                List<LocalisationIndicateur> lis = IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation);
+//                for (LocalisationIndicateur loin : lis) {
+//                    mesinIndicateurs.add(loin.getIndicateur());
+//                }
+//                List<Indicateur> inds = IndicateurMetier.findAllIndicateurByEtat(ParamEntity.ETAT_ACTIVE);
+//                List<Indicateur> otherInds = IndicateurMetier.supprimerIndicateurDansList(inds, mesinIndicateurs);
+//                //editLocalisationForm.setIdResponsable(localisation.getUser().getIdUser());
+//                model.addAttribute("indicateurs", otherInds);
+//
+//                model.addAttribute("editLocalisationForm", editLocalisationForm);
+//                /*-----------------------Responsable----------------------------*/
+//                User responsable = localisation.getUser();
+//                model.addAttribute("users", gesimmoMetier.findUSersByEtat(ParamEntity.ETAT_ACTIVE));
+//                if (responsable == null) {
+//                    model.addAttribute("editUserForm", new EditUserForm());
+//                } else {
+//                    EditUserForm editUserForm = new EditUserForm();
+//                    editUserForm.setIdUser(responsable.getIdUser());
+//                    editUserForm.setDateCreation(responsable.getDateCreation().toString());
+//                    editUserForm.setDateUpdated(responsable.getDateUpdated().toString());
+//                    editUserForm.setNom(responsable.getUserName());
+//                    editUserForm.setPrenom(responsable.getUserPrenom());
+//                    editUserForm.setEmail(responsable.getUserMail());
+//                    editUserForm.setLogin(responsable.getCompte().getLogin());
+//                    editUserForm.setTelephone(responsable.getUserPhone());
+//                    model.addAttribute("editUserForm", editUserForm);
+//
+//                }
+//                /*-----------------------Projets de la localite----------------------------*/
+//                List<Activite> projets = new ArrayList<Activite>();
+//                for (Activite activite : localisation.getActivites()) {
+//                    if (activite.getType().equalsIgnoreCase(ParamEntity.ACTIVITE_TYPE_PROJET) && activite.getEtat() == ParamEntity.ETAT_ACTIVE) {
+//                        projets.add(activite);
+//                    }
+//                }
+//                ProjetForm projetForm = new ProjetForm();
+//                projetForm.setNomActivite("nomActivite");
+//                model.addAttribute("projetForm", projetForm);
+//                model.addAttribute("projets", projets);
+//                /*-----------------------l'ensemble des projets----------------------------*/
+//                model.addAttribute("projetList", projetMetier.getAllProjets());
+//
+//                model.addAttribute("localisationForm", editLocalisationForm);
+//                /*-----------------------Indicateur de la localite----------------------------*/
+//                model.addAttribute("indicateursLocalisation", IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation));
+//                LOG.info("++++++++++++++++++++++++++++" + IndicateurMetier.findLocalisationIndicateurByIdLoc(idLocalisation).size());
+//            }
+//
+//        } catch (Exception e) {
+//            System.out.println("Exception : " + e.getMessage());
+//        } finally {
+//            return "ficheLocalisation";
+//        }
+//
+//    }
+
+   
 }
